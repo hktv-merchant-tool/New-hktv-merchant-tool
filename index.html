@@ -485,39 +485,37 @@ textarea { resize: vertical; line-height: 1.6; }
         <button class="btn btn-sm btn-outline" onclick="toggleGMV()">👁 隱藏 GMV</button>
         <button class="btn btn-sm btn-outline" onclick="setCommissionMode('standard')">標準模式</button>
         <button class="btn btn-sm btn-primary" onclick="setCommissionMode('threshold')">門檻優惠模式</button>
+        <button class="btn btn-sm btn-outline" onclick="expandAll()">全部展開</button>
+        <button class="btn btn-sm btn-outline" onclick="collapseAll()">全部收起</button>
       </div>
 
       <div class="stats-row">
-        <div class="stat-chip"><div class="val">5,186</div><div class="lbl">個分類碼</div></div>
-        <div class="stat-chip"><div class="val">16</div><div class="lbl">個主類別</div></div>
+        <div class="stat-chip"><div class="val" id="total-categories">載入中...</div><div class="lbl">個分類碼</div></div>
+        <div class="stat-chip"><div class="val" id="total-main-cats">16</div><div class="lbl">個主類別</div></div>
         <div class="stat-chip"><div class="val">3,883</div><div class="lbl">個分類碼有 GMV 數據</div></div>
       </div>
 
-      <div class="search-box">
-        <input type="text" id="cat-search" placeholder="搜尋分類碼、分類名稱、子分類..." oninput="filterCategories()">
-      </div>
-
       <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem">
-        <button class="btn btn-sm btn-primary" onclick="filterCat('all')">全部 5186</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('sports')">運動旅行 407</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('home')">家居電器 546</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('gadgets')">大腦場 454</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('supermarket')">超級市場 499</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('health')">護理保健 259</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('skincare')">護膚化妝 253</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('housewares')">家品傢俬 462</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('women')">女士服飾 92</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('men')">男士服飾 72</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('baby')">母嬰育兒 256+5</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('kids')">童裝 34</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('pets')">寵物用品 302</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('toys')">玩具圖書 770</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('electronics')">電子電器 738</button>
-        <button class="btn btn-sm btn-outline" onclick="filterCat('dining')">吃喝玩樂 37</button>
+        <button class="btn btn-sm btn-primary" onclick="filterCat('all')" id="cat-btn-all">全部</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('超級市場')" id="cat-btn-超級市場">超級市場 499</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('護理保健')" id="cat-btn-護理保健">護理保健 259</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('護膚化妝')" id="cat-btn-護護化妝">護護化妝 253</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('家品傢俬')" id="cat-btn-家品傢俬">家品傢俬 462</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('女士服飾')" id="cat-btn-女士服飾">女士服飾 92</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('男士服飾')" id="cat-btn-男士服飾">男士服飾 72</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('母嬰育兒')" id="cat-btn-母嬰育兒">母嬰育兒 261</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('童裝')" id="cat-btn-童裝">童裝 34</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('寵物用品')" id="cat-btn-寵物用品">寵物用品 302</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('玩具圖書')" id="cat-btn-玩具圖書">玩具圖書 770</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('電子電器')" id="cat-btn-電子電器">電子電器 738</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('家居電器')" id="cat-btn-家居電器">家居電器 546</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('大腦場')" id="cat-btn-大腦場">大腦場 454</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('運動旅行')" id="cat-btn-運動旅行">運動旅行 407</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('吃喝玩樂')" id="cat-btn-吃喝玩樂">吃喝玩樂 37</button>
       </div>
 
       <div id="category-list">
-        <!-- Categories will be rendered here -->
+        <div style="text-align:center;padding:2rem;color:var(--muted)">正在載入分類碼數據...</div>
       </div>
 
       <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem">
@@ -1043,26 +1041,143 @@ function downloadPreview() {
 }
 
 // ── COMMISSION ─────────────────────────────────────────────────────
-function renderCommission() {
-  const container = document.getElementById('category-list');
-  const filter = document.getElementById('cat-search').value.toLowerCase();
-  const cat = state.activeCat;
+let commissionData = [];
+let commissionLoaded = false;
+let expandedCats = new Set();
 
-  let data = COMMISSION_DATA;
-  if (filter) data = data.filter(c => c.name.toLowerCase().includes(filter) || c.id.includes(filter));
-  if (cat !== 'all') data = data.filter(c => c.id === cat || c.id.startsWith(cat));
-
-  container.innerHTML = data.map(c => `
-    <div class="cat-btn" onclick="toggleCatDetail('${c.id}')">
-      <div class="cat-name">${c.name}</div>
-      <div class="cat-count">${c.count} 個分類碼 · ${c.active} 碼有數據</div>
-      <div class="cat-rate">${c.standard}${c.threshold !== '—' ? ' · ' + c.threshold : ''}</div>
-      ${state.gmvVisible && c.gmv !== '—' ? `<div class="cat-gmv">${c.gmv}</div>` : ''}
-    </div>
-  `).join('');
+function loadCommissionData() {
+  if (commissionLoaded) return;
+  fetch('commission_data.json')
+    .then(r => r.json())
+    .then(data => {
+      commissionData = data;
+      commissionLoaded = true;
+      document.getElementById('total-categories').textContent = data.length.toLocaleString();
+      renderCommission();
+    })
+    .catch(e => {
+      console.error('Failed to load commission data:', e);
+      document.getElementById('category-list').innerHTML = '<div style="color:red;padding:1rem">載入數據失敗，請刷新頁面重試</div>';
+    });
 }
 
-function toggleCatDetail(id) { /* 預留扩展 */ }
+function renderCommission() {
+  const container = document.getElementById('category-list');
+  if (!commissionLoaded) {
+    loadCommissionData();
+    return;
+  }
+
+  const filter = document.getElementById('cat-search')?.value?.toLowerCase() || '';
+  const cat = state.activeCat;
+
+  // Group by main category
+  const grouped = {};
+  commissionData.forEach(item => {
+    if (filter && !item.code.toLowerCase().includes(filter) &&
+        !item.main.toLowerCase().includes(filter) &&
+        !item.sub.toLowerCase().includes(filter) &&
+        !item.availSub.toLowerCase().includes(filter)) {
+      return;
+    }
+    if (cat !== 'all' && !item.main.includes(cat)) return;
+
+    if (!grouped[item.main]) {
+      grouped[item.main] = { name: item.main, subs: {}, total: 0, stdRates: new Set(), merchRates: new Set() };
+    }
+    grouped[item.main].total++;
+    if (item.std) grouped[item.main].stdRates.add(item.std);
+    if (item.merch) grouped[item.main].merchRates.add(item.merch);
+
+    const subKey = item.sub;
+    if (!grouped[item.main].subs[subKey]) {
+      grouped[item.main].subs[subKey] = { name: subKey, items: [], stdRates: new Set(), merchRates: new Set() };
+    }
+    grouped[item.main].subs[subKey].items.push(item);
+    if (item.std) grouped[item.main].subs[subKey].stdRates.add(item.std);
+    if (item.merch) grouped[item.main].subs[subKey].merchRates.add(item.merch);
+  });
+
+  const sortedMains = Object.values(grouped).sort((a, b) => b.total - a.total);
+
+  container.innerHTML = sortedMains.map(main => {
+    const isExpanded = expandedCats.has(main.name);
+    const stdRate = main.stdRates.size > 0 ? Array.from(main.stdRates).join('/') + '%' : '-';
+    const merchRate = main.merchRates.size > 0 ? Array.from(main.merchRates).join('/') + '%' : '-';
+
+    const subCats = Object.values(main.subs).sort((a, b) => b.items.length - a.items.length);
+    const subHtml = subCats.map(sub => {
+      const subStd = sub.stdRates.size > 0 ? Array.from(sub.stdRates).join('/') + '%' : '-';
+      const subMerch = sub.merchRates.size > 0 ? Array.from(sub.merchRates).join('/') + '%' : '-';
+      const itemsHtml = sub.items.slice(0, 20).map(item => `
+        <tr>
+          <td style="font-family:monospace;font-size:0.72rem">${item.code}</td>
+          <td>${item.availSub || '-'}</td>
+          <td style="font-weight:600;color:var(--primary)">${item.std || '-'}</td>
+          <td>${item.merch || '-'}</td>
+        </tr>
+      `).join('');
+      return `
+        <div style="margin-bottom:1rem;padding:0.8rem;background:#FAFAFA;border-radius:8px;border:1px solid var(--border)">
+          <div style="font-weight:700;color:var(--primary-dark);margin-bottom:0.5rem">${sub.name} <span style="font-size:0.75rem;color:var(--muted)">(${sub.items.length} 項)</span></div>
+          <table style="width:100%;font-size:0.78rem;border-collapse:collapse">
+            <tr style="background:#E8F5EE;color:var(--primary)">
+              <th>分類碼</th><th>子分類</th><th>集運%</th><th>自送%</th>
+            </tr>
+            ${itemsHtml}
+            ${sub.items.length > 20 ? `<tr><td colspan="4" style="text-align:center;color:var(--muted);font-size:0.72rem">... 還有 ${sub.items.length - 20} 項</td></tr>` : ''}
+          </table>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="cat-section" style="margin-bottom:1rem">
+        <div class="cat-btn" onclick="toggleCatExpand('${main.name.replace(/'/g, "\\'")}')" style="cursor:pointer">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="cat-name">${main.name}</div>
+              <div class="cat-count">${main.total} 個分類碼 · ${subCats.length} 個子分類</div>
+              <div class="cat-rate">集運 ${stdRate} · 自送 ${merchRate}</div>
+            </div>
+            <div style="font-size:1.2rem;color:var(--primary)">${isExpanded ? '▼' : '▶'}</div>
+          </div>
+        </div>
+        <div id="cat-detail-${main.name.replace(/[^a-zA-Z0-9]/g, '_')}" style="padding:0.8rem;${isExpanded ? '' : 'display:none'}">
+          ${subHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (sortedMains.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)">沒有找到匹配的分類碼</div>';
+  }
+}
+
+function toggleCatExpand(catName) {
+  if (expandedCats.has(catName)) {
+    expandedCats.delete(catName);
+  } else {
+    expandedCats.add(catName);
+  }
+  renderCommission();
+}
+
+function expandAll() {
+  if (!commissionLoaded) return;
+  // Expand all main categories
+  Object.keys(commissionData.reduce((acc, item) => {
+    acc[item.main] = true;
+    return acc;
+  }, {})).forEach(cat => expandedCats.add(cat));
+  renderCommission();
+}
+
+function collapseAll() {
+  expandedCats.clear();
+  renderCommission();
+}
 
 function toggleGMV() {
   state.gmvVisible = !state.gmvVisible;
@@ -1076,8 +1191,23 @@ function setCommissionMode(mode) {
 
 function filterCat(cat) {
   state.activeCat = cat;
-  document.querySelectorAll('#page-commission .btn-outline, #page-commission .btn-primary').forEach(b => b.classList.remove('btn-primary'));
-  event.target.classList.add('btn-primary');
+  document.querySelectorAll('#page-commission .btn-outline, #page-commission .btn-primary').forEach(b => {
+    b.classList.remove('btn-primary');
+    b.classList.add('btn-outline');
+  });
+  const btnId = 'cat-btn-' + cat;
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    btn.classList.remove('btn-outline');
+    btn.classList.add('btn-primary');
+  } else {
+    const allBtn = document.getElementById('cat-btn-all');
+    if (allBtn) {
+      allBtn.classList.remove('btn-outline');
+      allBtn.classList.add('btn-primary');
+    }
+  }
+  expandedCats.clear();
   renderCommission();
 }
 
