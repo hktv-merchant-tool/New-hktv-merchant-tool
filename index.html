@@ -101,26 +101,26 @@ input[type="text"]:focus, select:focus, textarea:focus {
 }
 textarea { resize: vertical; line-height: 1.6; }
 
-/* ── Checkboxes ── */
+/* ── Plan Checkboxes ── */
 .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
-.plan-chip {
+.plan-item {
   display: flex; align-items: flex-start; gap: 0.6rem;
   padding: 0.75rem; border: 1.5px solid var(--border);
   border-radius: 10px; cursor: pointer;
   font-size: 0.82rem; transition: all 0.2s;
   user-select: none; background: var(--surface);
 }
-.plan-chip:hover { border-color: var(--primary); background: #E8F5EE; }
-.plan-chip.selected { border-color: var(--primary); background: #E8F5EE; }
-.plan-chip input { display: none; }
+.plan-item:hover { border-color: var(--primary); background: #E8F5EE; }
+.plan-item.selected { border-color: var(--primary); background: #E8F5EE; }
+.plan-item input[type="checkbox"] { display: none; }
 .plan-check {
   width: 16px; height: 16px; min-width: 16px;
   border: 2px solid var(--border); border-radius: 4px;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.2s; margin-top: 1px;
 }
-.plan-chip.selected .plan-check { background: var(--primary); border-color: var(--primary); }
-.plan-chip.selected .plan-check::after {
+.plan-item.selected .plan-check { background: var(--primary); border-color: var(--primary); }
+.plan-item.selected .plan-check::after {
   content: '✓'; color: white; font-size: 10px; font-weight: 700;
 }
 .plan-name { font-weight: 700; color: var(--primary-dark); font-size: 0.85rem; }
@@ -367,7 +367,7 @@ textarea { resize: vertical; line-height: 1.6; }
         </div>
       </div>
       <div class="plan-grid" id="plan-grid">
-        <label class="plan-chip" data-plan="typeA">
+        <div class="plan-item" data-plan="typeA" onclick="togglePlan(this)">
           <input type="checkbox" name="plan" value="typeA">
           <div class="plan-check"></div>
           <div style="flex:1">
@@ -377,8 +377,8 @@ textarea { resize: vertical; line-height: 1.6; }
             </div>
             <div class="plan-desc">本地常規商戶 · 年費 HK$25,000 + HK$22,000 廣告金</div>
           </div>
-        </label>
-        <label class="plan-chip" data-plan="overseas">
+        </div>
+        <div class="plan-item" data-plan="overseas" onclick="togglePlan(this)">
           <input type="checkbox" name="plan" value="overseas">
           <div class="plan-check"></div>
           <div style="flex:1">
@@ -388,8 +388,8 @@ textarea { resize: vertical; line-height: 1.6; }
             </div>
             <div class="plan-desc">海外跨境商戶 · 年費優惠 HK$3,000（原 HK$25,000）</div>
           </div>
-        </label>
-        <label class="plan-chip" data-plan="service">
+        </div>
+        <div class="plan-item" data-plan="service" onclick="togglePlan(this)">
           <input type="checkbox" name="plan" value="service">
           <div class="plan-check"></div>
           <div style="flex:1">
@@ -399,7 +399,7 @@ textarea { resize: vertical; line-height: 1.6; }
             </div>
             <div class="plan-desc">服務類商戶 · 年費 HK$3,000 · e-Voucher 核銷</div>
           </div>
-        </label>
+        </div>
         <!-- HKTV ThePlace 已移除 -->
       </div>
     </div>
@@ -929,18 +929,16 @@ function showPage(name) {
 }
 
 // ── PLAN SELECTION ────────────────────────────────────────────────
-document.querySelectorAll('.plan-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    chip.classList.toggle('selected');
-    const cb = chip.querySelector('input');
-    cb.checked = chip.classList.contains('selected');
-    updatePlans();
-    validateForm();
-  });
-});
+function togglePlan(el) {
+  el.classList.toggle('selected');
+  const cb = el.querySelector('input[type="checkbox"]');
+  if (cb) cb.checked = el.classList.contains('selected');
+  updatePlans();
+  validateForm();
+}
 
 function updatePlans() {
-  state.plans = Array.from(document.querySelectorAll('.plan-chip.selected')).map(c => c.dataset.plan);
+  state.plans = Array.from(document.querySelectorAll('.plan-item.selected')).map(c => c.dataset.plan);
 }
 
 // ── CHANNEL & LANGUAGE ───────────────────────────────────────────
@@ -1175,7 +1173,8 @@ function copyAllPenalties() {
 
 // ── RESET ────────────────────────────────────────────────────────
 function resetAll() {
-  document.querySelectorAll('.plan-chip').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.plan-item').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.plan-item input[type="checkbox"]').forEach(c => c.checked = false);
   document.querySelectorAll('input[name="plan"]').forEach(c => c.checked = false);
   document.getElementById('merchant-name').value = '';
   document.getElementById('business-desc').value = '';
