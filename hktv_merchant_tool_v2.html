@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HKTVmall 招商開發工具 | B2B Cold Outreach Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #106946;
+  --primary-dark: #0D5238;
+  --accent: #E47D21;
+  --accent-light: #F5A623;
+  --bg: #F4F7F4;
+  --surface: #FFFFFF;
+  --text: #1A1A2E;
+  --muted: #6C757D;
+  --border: #D4E8DF;
+  --danger: #C0392B;
+  --warning: #E67E22;
+}
+* { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── Header ── */
+header {
+  background: linear-gradient(135deg, #106946 0%, #0D5238 45%, #E47D21 100%);
+  color: white; padding: 1.5rem 2rem;
+  border-radius: 0 0 20px 20px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(16,105,70,0.3);
+}
+header h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.3rem; }
+header p { font-size: 0.82rem; opacity: 0.85; }
+
+/* ── Container ── */
+.container { max-width: 1400px; margin: 0 auto; padding: 0 1rem 2rem; }
+
+/* ── Nav Tabs ── */
+.nav-tabs {
+  display: flex; gap: 0.3rem; flex-wrap: wrap;
+  background: var(--surface);
+  border-radius: 12px; padding: 0.4rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.nav-tab {
+  flex: 1; min-width: 120px;
+  padding: 0.65rem 1rem;
+  border: none; background: transparent;
+  border-radius: 8px; cursor: pointer;
+  font-size: 0.82rem; font-weight: 500;
+  color: var(--muted);
+  transition: all 0.2s;
+  text-align: center;
+}
+.nav-tab:hover { background: var(--bg); color: var(--text); }
+.nav-tab.active { background: var(--primary); color: white; font-weight: 600; }
+
+/* ── Pages ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 1.3rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+.card-title {
+  font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--primary); margin-bottom: 1rem;
+  padding-bottom: 6px; border-bottom: 2.5px solid var(--accent);
+  display: inline-block;
+}
+.section-title {
+  font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--primary); margin-bottom: 0.8rem;
+}
+h2 { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.8rem; }
+h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+
+/* ── Form Elements ── */
+.form-group { margin-bottom: 1rem; }
+label.field-label { font-size: 0.78rem; font-weight: 600; color: var(--primary); display: block; margin-bottom: 0.35rem; }
+input[type="text"], select, textarea {
+  width: 100%; padding: 0.55rem 0.8rem;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 0.88rem; background: #FAFAFA; color: var(--text);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+input[type="text"]:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(16,105,70,0.12);
+}
+textarea { resize: vertical; line-height: 1.6; }
+
+/* ── Checkboxes ── */
+.plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+.plan-chip {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.75rem; border: 1.5px solid var(--border);
+  border-radius: 10px; cursor: pointer;
+  font-size: 0.82rem; transition: all 0.2s;
+  user-select: none; background: var(--surface);
+}
+.plan-chip:hover { border-color: var(--primary); background: #E8F5EE; }
+.plan-chip.selected { border-color: var(--primary); background: #E8F5EE; }
+.plan-chip input { display: none; }
+.plan-check {
+  width: 16px; height: 16px; min-width: 16px;
+  border: 2px solid var(--border); border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; margin-top: 1px;
+}
+.plan-chip.selected .plan-check { background: var(--primary); border-color: var(--primary); }
+.plan-chip.selected .plan-check::after {
+  content: '✓'; color: white; font-size: 10px; font-weight: 700;
+}
+.plan-name { font-weight: 700; color: var(--primary-dark); font-size: 0.85rem; }
+.plan-tag { font-size: 0.7rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-left: auto; }
+.tag-local { background: #E8F5EE; color: #106946; }
+.tag-overseas { background: #FFF3E0; color: #E47D21; }
+.tag-service { background: #E3F2FD; color: #1565C0; }
+.plan-desc { font-size: 0.75rem; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 0.6rem 1.2rem; border: none; border-radius: 8px;
+  cursor: pointer; font-size: 0.85rem; font-weight: 600;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+.btn-accent { background: var(--accent); color: white; }
+.btn-accent:hover { background: #c96a1a; }
+.btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+.btn-copy { background: #E8F5EE; color: var(--primary); border: 1px solid var(--border); padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+.btn-copy:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* ── Toggle Buttons ── */
+.toggle-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.toggle-btn {
+  padding: 0.5rem 1rem; border: 1.5px solid var(--border);
+  border-radius: 8px; background: var(--surface);
+  cursor: pointer; font-size: 0.82rem; font-weight: 500;
+  transition: all 0.2s; color: var(--muted);
+}
+.toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
+.toggle-btn.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
+
+/* ── Preview Box ── */
+.preview-box {
+  background: #FAFAFA; border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 1.2rem;
+  min-height: 200px; max-height: 500px; overflow-y: auto;
+  font-size: 0.85rem; line-height: 1.7;
+}
+.preview-box .preview-lang { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; }
+.preview-box .preview-lang span { font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; }
+.preview-lang-zh { background: #E8F5EE; color: var(--primary); }
+.preview-lang-en { background: #E3F2FD; color: #1565C0; }
+.preview-divider { border-top: 1px dashed var(--border); margin: 1rem 0; }
+.preview-placeholder { color: var(--muted); font-style: italic; text-align: center; padding: 2rem; }
+
+/* ── Step indicator ── */
+.step-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--primary); color: white;
+  font-size: 0.78rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-label { font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); }
+.step-hint { font-size: 0.75rem; color: var(--muted); }
+
+/* ── Commission Page ── */
+.stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.stat-chip {
+  flex: 1; min-width: 120px; background: #E8F5EE;
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 0.8rem 1rem; text-align: center;
+}
+.stat-chip .val { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+.stat-chip .lbl { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.6rem; margin-bottom: 1rem; }
+.cat-btn {
+  padding: 0.7rem; border: 1.5px solid var(--border);
+  border-radius: 8px; background: var(--surface);
+  cursor: pointer; font-size: 0.78rem; text-align: left;
+  transition: all 0.2s;
+}
+.cat-btn:hover { border-color: var(--primary); background: #E8F5EE; }
+.cat-btn .cat-name { font-weight: 700; color: var(--primary-dark); }
+.cat-btn .cat-count { font-size: 0.7rem; color: var(--muted); }
+.cat-btn .cat-rate { font-size: 0.72rem; color: var(--accent); font-weight: 600; margin-top: 3px; }
+.cat-btn .cat-gmv { font-size: 0.68rem; color: var(--muted); }
+.cat-detail { background: #FAFAFA; border-radius: 10px; padding: 1rem; margin-top: 0.5rem; font-size: 0.82rem; }
+.cat-detail table { width: 100%; border-collapse: collapse; }
+.cat-detail th, .cat-detail td { padding: 0.4rem 0.6rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+.cat-detail th { color: var(--primary); font-weight: 600; }
+.search-box { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.search-box input { flex: 1; }
+
+/* ── 3PL Page ── */
+.hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.hero-stat {
+  background: linear-gradient(135deg, #106946, #0D5238);
+  color: white; border-radius: 12px; padding: 1.2rem;
+  text-align: center;
+}
+.hero-stat .val { font-size: 1.8rem; font-weight: 700; }
+.hero-stat .lbl { font-size: 0.72rem; opacity: 0.85; margin-top: 4px; }
+.price-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.85rem; }
+.price-table th, .price-table td { padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); }
+.price-table th { background: #E8F5EE; color: var(--primary); font-weight: 600; }
+.price-table tr:hover { background: #FAFAFA; }
+.tier-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.5rem; margin: 0.5rem 0; }
+.tier-box { background: #FAFAFA; border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem; text-align: center; font-size: 0.75rem; }
+.tier-box .tier-name { font-weight: 700; color: var(--primary-dark); font-size: 0.7rem; }
+.tier-box .tier-price { font-size: 1rem; font-weight: 700; color: var(--accent); }
+.tier-box .tier-sub { font-size: 0.65rem; color: var(--muted); }
+.process-steps { display: flex; flex-direction: column; gap: 0.8rem; }
+.process-step { display: flex; gap: 1rem; align-items: flex-start; }
+.step-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--primary); color: white;
+  font-size: 0.8rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-content .step-title { font-weight: 700; color: var(--primary-dark); font-size: 0.88rem; }
+.step-content .step-desc { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+.contact-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+.contact-chip { display: flex; align-items: center; gap: 0.5rem; background: #E8F5EE; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.85rem; }
+.contact-chip a { color: var(--primary); text-decoration: none; font-weight: 600; }
+
+/* ── FAQ Page ── */
+.faq-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.faq-category { margin-bottom: 1.5rem; }
+.faq-cat-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 0.5rem; padding-left: 0.5rem; }
+.faq-item {
+  border: 1.5px solid var(--border); border-radius: 10px;
+  overflow: hidden; margin-bottom: 0.4rem; background: var(--surface);
+}
+.faq-q {
+  width: 100%; padding: 0.8rem 1rem;
+  background: transparent; border: none; text-align: left;
+  cursor: pointer; font-size: 0.85rem; font-weight: 600;
+  color: var(--text); display: flex; justify-content: space-between; align-items: center;
+  transition: background 0.2s;
+}
+.faq-q:hover { background: #E8F5EE; }
+.faq-q::after { content: '+'; font-size: 1.2rem; color: var(--primary); transition: transform 0.2s; }
+.faq-item.open .faq-q::after { transform: rotate(45deg); }
+.faq-a { display: none; padding: 0.8rem 1rem; font-size: 0.82rem; line-height: 1.6; color: var(--muted); border-top: 1px solid var(--border); }
+.faq-item.open .faq-a { display: block; }
+.link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.6rem; margin-bottom: 1rem; }
+.link-card {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.8rem; border: 1.5px solid var(--border);
+  border-radius: 10px; text-decoration: none; color: var(--text);
+  transition: all 0.2s; background: var(--surface);
+}
+.link-card:hover { border-color: var(--primary); background: #E8F5EE; }
+.link-card .link-icon { font-size: 1.2rem; }
+.link-card .link-title { font-weight: 600; font-size: 0.82rem; color: var(--primary-dark); }
+.link-card .link-desc { font-size: 0.7rem; color: var(--muted); }
+
+/* ── Penalty Page ── */
+.penalty-summary { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.penalty-stat { flex: 1; min-width: 100px; text-align: center; padding: 0.8rem; border-radius: 10px; }
+.penalty-stat.total { background: #E8F5EE; border: 1px solid var(--border); }
+.penalty-stat.critical { background: #FDEDEC; border: 1px solid #E74C3C; }
+.penalty-stat.serious { background: #FEF5E7; border: 1px solid #E67E22; }
+.penalty-stat.moderate { background: #FEF9E7; border: 1px solid #F1C40F; }
+.penalty-stat .val { font-size: 1.5rem; font-weight: 700; }
+.penalty-stat .lbl { font-size: 0.7rem; font-weight: 600; }
+.penalty-stat.total .val { color: var(--primary); }
+.penalty-stat.critical .val { color: #C0392B; }
+.penalty-stat.serious .val { color: #E67E22; }
+.penalty-stat.moderate .val { color: #D4AC0D; }
+.penalty-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.penalty-table th { background: #E8F5EE; color: var(--primary); font-weight: 700; padding: 0.7rem 0.8rem; text-align: left; border-bottom: 2px solid var(--border); }
+.penalty-table td { padding: 0.7rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.penalty-table tr:hover { background: #FAFAFA; }
+.severity-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+.severity-critical { background: #FDEDEC; color: #C0392B; }
+.severity-serious { background: #FEF5E7; color: #E67E22; }
+.severity-moderate { background: #FEF9E7; color: #D4AC0D; }
+.list-header { font-weight: 700; color: var(--primary-dark); padding: 0.8rem 0; border-bottom: 2px solid var(--accent); margin: 1.5rem 0 1rem; font-size: 0.9rem; }
+.filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .plan-grid { grid-template-columns: 1fr; }
+  .main-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem;
+  background: var(--primary); color: white;
+  padding: 0.8rem 1.2rem; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; z-index: 9999;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── Reset button ── */
+.reset-btn { background: transparent; border: 1px solid rgba(255,255,255,0.4); color: white; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.78rem; }
+.reset-btn:hover { background: rgba(255,255,255,0.15); }
+
+/* ── Footer ── */
+.footer { text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container" style="margin-bottom:0">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem">
+      <div>
+        <h1>HKTVmall 招商開發工具</h1>
+        <p>B2B Cold Outreach Generator — HK BD Team 一站通</p>
+      </div>
+      <button class="reset-btn" onclick="resetAll()">重置 Reset</button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Navigation -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('generator')">✦ 文本生成器</button>
+    <button class="nav-tab" onclick="showPage('commission')">◈ 佣金率與數據</button>
+    <button class="nav-tab" onclick="showPage('3pl')">◉ 3PL 倉儲服務</button>
+    <button class="nav-tab" onclick="showPage('faq')">◎ FAQ 常見問題</button>
+    <button class="nav-tab" onclick="showPage('penalty')">⚠ 罰款清單</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 1: TEXT GENERATOR -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="page-generator" class="page active">
+
+    <!-- Step 1: Plan Selection -->
+    <div class="card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-label">招商計劃選擇</div>
+          <div class="step-hint">可多選，系統將合併生成對應要點</div>
+        </div>
+      </div>
+      <div class="plan-grid" id="plan-grid">
+        <label class="plan-chip" data-plan="typeA">
+          <input type="checkbox" name="plan" value="typeA">
+          <div class="plan-check"></div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <span class="plan-name">Type A Plan</span>
+              <span class="plan-tag tag-local">本地</span>
+            </div>
+            <div class="plan-desc">本地常規商戶 · 年費 HK$25,000 + HK$22,000 廣告金</div>
+          </div>
+        </label>
+        <label class="plan-chip" data-plan="overseas">
+          <input type="checkbox" name="plan" value="overseas">
+          <div class="plan-check"></div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <span class="plan-name">Overseas Plan</span>
+              <span class="plan-tag tag-overseas">海外</span>
+            </div>
+            <div class="plan-desc">海外跨境商戶 · 年費優惠 HK$3,000（原 HK$25,000）</div>
+          </div>
+        </label>
+        <label class="plan-chip" data-plan="service">
+          <input type="checkbox" name="plan" value="service">
+          <div class="plan-check"></div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <span class="plan-name">Service Deal</span>
+              <span class="plan-tag tag-service">服務</span>
+            </div>
+            <div class="plan-desc">服務類商戶 · 年費 HK$3,000 · e-Voucher 核銷</div>
+          </div>
+        </label>
+        <!-- HKTV ThePlace 已移除 -->
+      </div>
+    </div>
+
+    <!-- Step 2: Channel & Language -->
+    <div class="card">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-label">渠道與語言設定</div>
+          <div class="step-hint">選擇發送渠道及文本語言</div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="section-title">發送渠道</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-channel="email" onclick="setChannel('email')">✉️ Email</button>
+          <button class="toggle-btn" data-channel="whatsapp" onclick="setChannel('whatsapp')">💬 WhatsApp</button>
+        </div>
+      </div>
+      <div>
+        <div class="section-title">文本語言</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-lang="bilingual" onclick="setLang('bilingual')">🌐 雙語</button>
+          <button class="toggle-btn" data-lang="zh" onclick="setLang('zh')">🇭🇰 中文</button>
+          <button class="toggle-btn" data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Merchant Info -->
+    <div class="card">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-label">商戶基本資料</div>
+          <div class="step-hint">輸入目標商戶名稱，可自動識別業務類型</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="field-label">商戶名稱 / 品牌名稱 *</label>
+        <input type="text" id="merchant-name" placeholder="例如：ABC 電器有限公司" oninput="validateForm()">
+      </div>
+      <div class="form-group">
+        <label class="field-label">主要業務描述</label>
+        <input type="text" id="business-desc" placeholder="例如：電子產品零售、餐飲服務...">
+      </div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem">輸入品牌名稱後點擊「自動識別」，或手動填寫業務描述</div>
+      <button class="btn btn-primary" id="generate-btn" disabled onclick="generateText()">
+        ✨ 一鍵生成招商文本 Generate
+      </button>
+      <div id="form-hint" style="font-size:0.78rem;color:var(--accent);margin-top:0.5rem">⬆ 請先選擇至少一個招商計劃</div>
+    </div>
+
+    <!-- Preview -->
+    <div class="card">
+      <h2 id="preview-title">Email 預覽</h2>
+      <div id="preview-lang-tags" class="preview-lang">
+        <span class="preview-lang-zh">中英雙語</span>
+      </div>
+      <div class="preview-box" id="preview-box">
+        <div class="preview-placeholder" id="preview-placeholder">準備生成招商文本</div>
+        <div id="preview-content" style="display:none"></div>
+      </div>
+      <div style="margin-top:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="btn-copy" onclick="copyPreview()">📋 複製</button>
+        <button class="btn-copy" onclick="downloadPreview()">💾 下載 .txt</button>
+      </div>
+    </div>
+
+    <div style="font-size:0.75rem;color:var(--muted);padding:0.5rem 0">佣金率及分類碼資訊請前往「佣金率與數據」頁面查閱</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 2: COMMISSION -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="page-commission" class="page">
+    <div class="card">
+      <h1 style="font-size:1.3rem;margin-bottom:0.5rem">佣金率與數據</h1>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1.5rem">數據源：產品分類碼及佣金表 202601 · 佣金率以 MMS 系統內顯示數字為準</p>
+
+      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap">
+        <button class="btn btn-sm btn-outline" onclick="toggleGMV()">👁 隱藏 GMV</button>
+        <button class="btn btn-sm btn-outline" onclick="setCommissionMode('standard')">標準模式</button>
+        <button class="btn btn-sm btn-primary" onclick="setCommissionMode('threshold')">門檻優惠模式</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-chip"><div class="val">5,186</div><div class="lbl">個分類碼</div></div>
+        <div class="stat-chip"><div class="val">16</div><div class="lbl">個主類別</div></div>
+        <div class="stat-chip"><div class="val">3,883</div><div class="lbl">個分類碼有 GMV 數據</div></div>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="cat-search" placeholder="搜尋分類碼、分類名稱、子分類..." oninput="filterCategories()">
+      </div>
+
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem">
+        <button class="btn btn-sm btn-primary" onclick="filterCat('all')">全部 5186</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('sports')">運動旅行 407</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('home')">家居電器 546</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('gadgets')">大腦場 454</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('supermarket')">超級市場 499</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('health')">護理保健 259</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('skincare')">護膚化妝 253</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('housewares')">家品傢俬 462</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('women')">女士服飾 92</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('men')">男士服飾 72</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('baby')">母嬰育兒 256+5</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('kids')">童裝 34</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('pets')">寵物用品 302</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('toys')">玩具圖書 770</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('electronics')">電子電器 738</button>
+        <button class="btn btn-sm btn-outline" onclick="filterCat('dining')">吃喝玩樂 37</button>
+      </div>
+
+      <div id="category-list">
+        <!-- Categories will be rendered here -->
+      </div>
+
+      <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem">
+        ⚠️ 佣金率以 MMS 系統內顯示數字為準 · GMV 數據來源：bycat(2).xlsx（2026 年 1–4 月）
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 3: 3PL -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="page-3pl" class="page">
+    <div class="card">
+      <h1 style="font-size:1.3rem;margin-bottom:0.3rem">HKTV 3PL 倉儲服務</h1>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1.5rem">By Shoalter Technology Ltd · 香港科技探索有限公司成員 · 資料更新：2026年1月</p>
+
+      <button class="btn-copy" onclick="copyText(document.getElementById('pl-3pl-main').innerText)" style="margin-bottom:1rem">📋 複製完整 3PL 資訊</button>
+
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="val">144,000+</div><div class="lbl">平方呎倉庫</div></div>
+        <div class="hero-stat"><div class="val">8 小時</div><div class="lbl">最快派送</div></div>
+        <div class="hero-stat"><div class="val">+42%</div><div class="lbl">SKU GMV 增長</div></div>
+        <div class="hero-stat"><div class="val">364 日</div><div class="lbl">全天候運作</div></div>
+      </div>
+
+      <h2>服務概覽</h2>
+      <div class="card-title">主要服務（可直接複製貼上）</div>
+      <div class="preview-box" id="pl-3pl-main">
+HKTV 3PL 主要服務：
+• 倉存服務：靈活訂閱，常溫/冷氣環境（約20-25°C）
+• 訂單處理：自動化撿貨及包裝，符合 HKTVmall 包裝指引
+• 快速配送：最快 8 小時派送（未來支援最快 3 小時）
+• 增值服務：盤點、出倉、臨時存倉
+      </div>
+      <button class="btn-copy" onclick="copyText(document.getElementById('pl-3pl-main').innerText)">複製</button>
+
+      <h2 style="margin-top:1.5rem">倉存規格</h2>
+      <div class="preview-box">
+儲存箱尺寸：60 x 40 x 32 厘米（約 0.052 立方米）
+貨物尺寸限制：49.5 x 32.5 x 25 厘米
+每箱最大重量：17 公斤
+箱型：1格 / 2格 / 4格
+每格只能放置一款貨品（相同有效日期）
+      </div>
+      <button class="btn-copy" onclick="copyText(this.previousElementSibling.innerText)">複製</button>
+
+      <h2 style="margin-top:1.5rem">選用 HKTV 3PL 的優勢</h2>
+
+      <h3>GMV 增長數據</h3>
+      <div class="preview-box">
+加入 3PL 後的 GMV 增長數據：
+• 部分產品使用 3PL：GMV 增長比標準集運多 72%
+• 全店使用 3PL：GMV 增長比同類別平均多 70%
+• 3PL 商戶每月平均增幅：7%
+• 新商戶開店即加入 3PL：首三個月 GMV 比同期商戶高 57%
+
+各類別 SKU GMV 增幅（加入前後對比）：
+  母嬰育兒（尿片）：+150%
+  超級市場（有機健康食品）：+138%
+  家品傢俬（浴室）：+120%
+  超級市場（家居清潔）：+112%
+  護膚化妝（卸妝）：+100%
+      </div>
+      <button class="btn-copy" onclick="copyText(this.previousElementSibling.innerText)">複製</button>
+
+      <h3 style="margin-top:1rem">曝光率優勢</h3>
+      <div class="preview-box">
+3PL 產品的額外曝光優勢：
+• 8 小時派送專屬標籤
+• 顯示於 HKTVmall 8 小時專區
+• 搜尋關鍵字時優先顯示
+• 瀏覽產品類別時優先排列
+• 享有額外推廣活動支援
+      </div>
+      <button class="btn-copy" onclick="copyText(this.previousElementSibling.innerText)">複製</button>
+
+      <h2 style="margin-top:1.5rem">收費標準 — Standard Plan</h2>
+
+      <h3>A. 每月訂閱費（每一儲存箱）</h3>
+      <table class="price-table">
+        <thead><tr><th>級別</th><th>常溫</th><th>冷氣</th></tr></thead>
+        <tbody>
+          <tr><td>第一級 (1–199 箱)</td><td>$70</td><td>$71</td></tr>
+          <tr><td>第二級 (200–499 箱)</td><td>$68</td><td>$69</td></tr>
+          <tr><td>第三級 (500–999 箱)</td><td>$60</td><td>$61</td></tr>
+          <tr><td>第四級 (1,000+ 箱)</td><td>$55</td><td>$56</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin-top:1rem">B. 服務費</h3>
+      <table class="price-table">
+        <thead><tr><th>服務項目</th><th>收費</th></tr></thead>
+        <tbody>
+          <tr><td>訂單處理費（首件產品）</td><td>$6.5 / $6 / $5.5 / $5（按級別）</td></tr>
+          <tr><td>相同產品（同一訂單）</td><td>$1 / 額外每件</td></tr>
+          <tr><td>入倉費（每一儲存箱）</td><td>$3.5</td></tr>
+          <tr><td>出倉費（每一儲存箱）</td><td>$10</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem">* 訂單處理費已涵蓋包裝物料費用，易碎或敏感物品須收取額外費用</p>
+
+      <div class="preview-box" style="background:#E8F5EE">
+        <strong>3PL Standard Plan 收費摘要：</strong><br>
+月費：$55–$71/箱（按數量及溫度）<br>
+訂單處理：$5–$6.5/件（按級別）<br>
+入倉費：$3.5/箱 | 出倉費：$10/箱
+      </div>
+      <button class="btn-copy" onclick="copyText(this.previousElementSibling.innerText)">複製</button>
+
+      <h2 style="margin-top:1.5rem">大貨服務 & 增值服務</h2>
+
+      <h3>大貨服務（原箱出售產品）</h3>
+      <table class="price-table">
+        <thead><tr><th>服務項目</th><th>收費</th></tr></thead>
+        <tbody>
+          <tr><td>每月存倉費（每 CBM）</td><td>$600</td></tr>
+          <tr><td>訂單處理費（10kg 以下）</td><td>$10/件</td></tr>
+          <tr><td>訂單處理費（10.1–15kg）</td><td>$12/件</td></tr>
+          <tr><td>訂單處理費（15.1–20kg）</td><td>$15/件</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.72rem;color:var(--muted)">需另簽 1 年合約，最低消費 2 CBM。三邊總和不超過 180cm，其中一邊不超過 130cm</p>
+
+      <h3 style="margin-top:1rem">其他增值服務</h3>
+      <table class="price-table">
+        <thead><tr><th>服務</th><th>收費</th></tr></thead>
+        <tbody>
+          <tr><td>臨時存倉費</td><td>$7/箱/日</td></tr>
+          <tr><td>盤點收費</td><td>$7/箱</td></tr>
+          <tr><td>原箱拆卸（1格）</td><td>$6/箱</td></tr>
+          <tr><td>原箱拆卸（2格）</td><td>$9/箱</td></tr>
+          <tr><td>原箱拆卸（4格）</td><td>$12/箱</td></tr>
+        </tbody>
+      </table>
+
+      <h2 style="margin-top:1.5rem">服務流程</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-icon">1</div>
+          <div class="step-content">
+            <div class="step-title">網上預約入倉</div>
+            <div class="step-desc">於 MMS 系統隨時申請入倉，選擇合適日期及時間，申請即時批核</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-icon">2</div>
+          <div class="step-content">
+            <div class="step-title">準備入倉貨品</div>
+            <div class="step-desc">貨品表面必須有條碼標籤 (Barcode label)，使用手機應用程式掃描配對</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-icon">3</div>
+          <div class="step-content">
+            <div class="step-title">將貨品送到 HKTV 3PL 倉庫</div>
+            <div class="step-desc">根據預約時間到倉庫自助入倉，系統自動更新庫存</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-icon">4</div>
+          <div class="step-content">
+            <div class="step-title">倉儲管理 → 接收訂單 → 撿貨及包裝</div>
+            <div class="step-desc">自動化系統處理訂單，MMS 可即時查看庫存數量及設定補貨提示</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-icon">5</div>
+          <div class="step-content">
+            <div class="step-title">由 HKTVmall 物流配送</div>
+            <div class="step-desc">最快 8 小時送達，附有訂單追蹤，顧客可同步得知訂單狀態</div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:1.5rem">聯絡方式</h2>
+      <div class="contact-row">
+        <div class="contact-chip">📧 電郵：<a href="mailto:3pl@hktv.com.hk"><EMAIL></a></div>
+        <div class="contact-chip">📱 WhatsApp：<a href="https://wa.me/85254804024">5480 4024</a></div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:0.8rem">如需進一步了解詳情，請聯絡您的客戶關係經理，或直接透過以上渠道聯絡 3PL 團隊。</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 4: FAQ -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="page-faq" class="page">
+    <div class="card">
+      <h1 style="font-size:1.3rem;margin-bottom:0.5rem">FAQ 常見問題</h1>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">精選常見問題 · 完整版請前往 <a href="https://sites.google.com/view/hktv-merc-faq/" target="_blank" style="color:var(--primary)">官方 FAQ 網站</a></p>
+
+      <div class="form-group">
+        <input type="text" id="faq-search" placeholder="搜尋問題..." oninput="filterFAQ()">
+      </div>
+
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem">
+        <button class="btn btn-sm btn-primary" onclick="filterFAQCat('all')">全部 24</button>
+        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('application')">開店申請 5</button>
+        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('mms')">MMS 後台操作 4</button>
+        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('listing')">產品上架 3</button>
+        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('delivery')">訂單與派送 2</button>
+        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('finance')">佣金與財務 3</button>
+        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('promo')">推廣活動 3</button>
+        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('3pl')">3PL 倉儲服務 2</button>
+        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('tools')">常用工具與連結 2</button>
+      </div>
+
+      <h2 style="font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem">常用連結</h2>
+      <div class="link-grid">
+        <a class="link-card" href="https://mms.shoalter.com/mms/#/dashboard" target="_blank">
+          <div class="link-icon">🖥️</div>
+          <div><div class="link-title">MMS 商戶管理系統</div><div class="link-desc">管理產品、訂單、庫存</div></div>
+        </a>
+        <a class="link-card" href="https://exchange.hktvmall.com/merchant/home/index.php" target="_blank">
+          <div class="link-icon">📢</div>
+          <div><div class="link-title">Exchange 商戶資訊平台</div><div class="link-desc">公告、通知、文件下載</div></div>
+        </a>
+        <a class="link-card" href="https://rrmp.comms.hktvmall.com/login" target="_blank">
+          <div class="link-icon">⭐</div>
+          <div><div class="link-title">RRMP 評分及評論管理</div><div class="link-desc">管理顧客評分及評論</div></div>
+        </a>
+        <a class="link-card" href="https://cloud.marketing.hktvmall.com/adplan" target="_blank">
+          <div class="link-icon">📣</div>
+          <div><div class="link-title">商戶自助廣告系統</div><div class="link-desc">自助設定廣告計劃</div></div>
+        </a>
+        <a class="link-card" href="https://merchant.shoalter.com/value-added-services/merchant-dashboard" target="_blank">
+          <div class="link-icon">📊</div>
+          <div><div class="link-title">商戶數據分析平台</div><div class="link-desc">查看銷售數據及分析</div></div>
+        </a>
+        <a class="link-card" href="https://academy.hktvmall.com/mercworkshop" target="_blank">
+          <div class="link-icon">🎓</div>
+          <div><div class="link-title">Academy 商戶教學課程</div><div class="link-desc">工作坊及教學資源</div></div>
+        </a>
+        <a class="link-card" href="https://academy.hktvmall.com/newmerc-guide" target="_blank">
+          <div class="link-icon">📖</div>
+          <div><div class="link-title">新手指南</div><div class="link-desc">新商戶必讀入門指南</div></div>
+        </a>
+        <a class="link-card" href="https://business.hktvmall.com/" target="_blank">
+          <div class="link-icon">🏪</div>
+          <div><div class="link-title">HKTVmall 商戶加盟</div><div class="link-desc">申請成為 HKTVmall 商戶</div></div>
+        </a>
+      </div>
+
+      <div id="faq-list"></div>
+
+      <div style="background:#FEF9E7;border:1px solid #F1C40F;border-radius:10px;padding:1rem;margin-top:1.5rem;text-align:center">
+        <p style="font-size:0.82rem;color:var(--text)">找不到答案？前往官方完整 FAQ</p>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:0.3rem">官方 FAQ 網站包含更多詳細問題及教學影片，支援關鍵字搜尋</p>
+        <a href="https://sites.google.com/view/hktv-merc-faq/" target="_blank" class="btn btn-accent btn-sm" style="margin-top:0.8rem;display:inline-flex">前往 FAQ</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 5: PENALTY -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="page-penalty" class="page">
+    <div class="card">
+      <h1 style="font-size:1.3rem;margin-bottom:0.5rem">HKTVmall 罰款清單</h1>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">List of Penalty Charges — 共 29 條違規條款</p>
+
+      <button class="btn-copy" onclick="copyAllPenalties()" style="margin-bottom:1rem">📋 複製全部 (29)</button>
+
+      <div class="penalty-summary">
+        <div class="penalty-stat total"><div class="val">29</div><div class="lbl">全部條款</div></div>
+        <div class="penalty-stat critical"><div class="val">8</div><div class="lbl">極嚴重</div></div>
+        <div class="penalty-stat serious"><div class="val">10</div><div class="lbl">嚴重</div></div>
+        <div class="penalty-stat moderate"><div class="val">11</div><div class="lbl">中等</div></div>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="penalty-search" placeholder="搜尋違規類別、條例、罰款金額..." oninput="filterPenalties()">
+      </div>
+
+      <div class="filter-bar">
+        <button class="btn btn-sm btn-primary" onclick="filterPenaltyType('all')">全部 (29)</button>
+        <button class="btn btn-sm btn-outline" onclick="filterPenaltyType('complaint')">列表一：投訴/警告後罰款</button>
+        <button class="btn btn-sm btn-outline" onclick="filterPenaltyType('self')">列表二：HKTVmall 自行發現</button>
+        <button class="btn btn-sm btn-outline" onclick="filterPenaltyType('other')">列表三：其他違規行為</button>
+      </div>
+      <div class="filter-bar">
+        <button class="btn btn-sm btn-outline" onclick="filterPenaltySev('all')">全部嚴重程度</button>
+        <button class="btn btn-sm btn-outline" style="border-color:#E74C3C;color:#C0392B" onclick="filterPenaltySev('critical')">極嚴重 (8)</button>
+        <button class="btn btn-sm btn-outline" style="border-color:#E67E22;color:#E67E22" onclick="filterPenaltySev('serious')">嚴重 (10)</button>
+        <button class="btn btn-sm btn-outline" style="border-color:#F1C40F;color:#D4AC0D" onclick="filterPenaltySev('moderate')">中等 (11)</button>
+      </div>
+
+      <div id="penalty-list"></div>
+
+      <div style="background:#FEF9E7;border:1px solid #F1C40F;border-radius:10px;padding:1rem;margin-top:1.5rem;font-size:0.8rem">
+        <p style="font-weight:700;color:var(--text);margin-bottom:0.3rem">重複違規：</p>
+        <p style="color:var(--muted)">HKTVmall 在進行下一次貨品檢查時，若發現商戶所銷售的同類貨品再次違反相同條例，其罰款將以上一次被罰金額（不包括列表三所列的項目）雙倍計算。</p>
+        <p style="font-weight:700;color:var(--text);margin-top:0.8rem;margin-bottom:0.3rem">修改權利：</p>
+        <p style="color:var(--muted)">HKTVmall 保留全權自行決定於任何時候就罰款作出任何更改，而且不作預先通知。修改後的罰款條款會在通知商戶後生效。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Made with Claude · HKTVmall B2B Tool v2</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────
+const COMMISSION_DATA = [
+  { id:'sports', name:'運動旅行 Sports & Travel', count:407, standard:'集運 10% / 自送 15%', threshold:'含門檻優惠', gmv:'月均 HK$10.6M / 總計 HK$42.5M', active:362 },
+  { id:'home', name:'家居電器 Home Appliances', count:546, standard:'集運 10% / 自送 3%', threshold:'含門檻優惠', gmv:'月均 HK$38.5M / 總計 HK$153.6M', active:343 },
+  { id:'gadgets', name:'大腦場 Gadgets & Electronics', count:454, standard:'集運 10% / 自送 3%', threshold:'—', gmv:'月均 HK$20.8M / 總計 HK$83.1M', active:392 },
+  { id:'supermarket', name:'超級市場 Supermarket', count:499, standard:'集運 12% / 自送 13%', threshold:'—', gmv:'月均 HK$283.7M / 總計 HK$1,134.7M', active:473 },
+  { id:'health', name:'護理保健 Personal Care & Health', count:259, standard:'集運 24%', threshold:'—', gmv:'月均 HK$128.9M / 總計 HK$515.6M', active:256 },
+  { id:'skincare', name:'護膚化妝 Skincare & Makeup', count:253, standard:'集運 24%', threshold:'—', gmv:'月均 HK$33.0M / 總計 HK$132.0M', active:251 },
+  { id:'housewares', name:'家品傢俬 Housewares', count:462, standard:'集運 26% / 自送 15%', threshold:'含門檻優惠', gmv:'月均 HK$24.6M / 總計 HK$98.3M', active:462 },
+  { id:'women', name:'女士服飾 Women\'s Fashion', count:92, standard:'集運 15% / 自送 6.5%', threshold:'含門檻優惠', gmv:'月均 HK$11.2M / 總計 HK$44.7M', active:92 },
+  { id:'men', name:'男士服飾 Men\'s Fashion', count:72, standard:'集運 15% / 自送 6.5%', threshold:'含門檻優惠', gmv:'月均 HK$1.4M / 總計 HK$5.5M', active:67 },
+  { id:'baby1', name:'母嬰育兒 Mother & Baby (A)', count:256, standard:'集運 18% / 自送 25%', threshold:'—', gmv:'月均 HK$25.4M / 總計 HK$101.5M', active:255 },
+  { id:'baby2', name:'母嬰育兒 Mother & Baby (B)', count:5, standard:'集運 25%', threshold:'—', gmv:'月均 HK$124K / 總計 HK$497K', active:5 },
+  { id:'kids', name:'童裝 Kids\' Fashion', count:34, standard:'集運 15% / 自送 6.5%', threshold:'含門檻優惠', gmv:'月均 HK$235K / 總計 HK$937K', active:34 },
+  { id:'pets', name:'寵物用品 Pets', count:302, standard:'集運 18% / 自送 25%', threshold:'—', gmv:'月均 HK$77.6M / 總計 HK$310.4M', active:299 },
+  { id:'toys', name:'玩具圖書 Toys & Books', count:770, standard:'集運 23% / 自送 15%', threshold:'—', gmv:'月均 HK$4.6M / 總計 HK$18.5M', active:582 },
+  { id:'electronics', name:'電子電器 Electrical Appliances', count:738, standard:'集運 8% / 自送 3%', threshold:'—', gmv:'—', active:0 },
+  { id:'dining', name:'吃喝玩樂電子券 Dining & Lifestyle', count:37, standard:'集運 10%', threshold:'—', gmv:'月均 HK$640K / 總計 HK$1.9M', active:9 },
+];
+
+const FAQ_DATA = [
+  { cat:'application', q:'如何在 HKTVmall 開店？', a:'前往 HKTVmall 商戶加盟頁面 (business.hktvmall.com) 提交申請，或聯絡您的客戶關係經理。所需文件包括商業登記證、公司架構證明等。' },
+  { cat:'application', q:'Type A Plan 和 Overseas Plan 有什麼分別？', a:'Type A Plan 適合本地商戶，年費 HK$25,000 + HK$22,000 廣告金；Overseas Plan 適合海外/跨境商戶，年費優惠 HK$3,000。' },
+  { cat:'application', q:'Service Deal 是什麼？適合哪類商戶？', a:'Service Deal 專為服務類商戶設計，年費 HK$3,000，支援 e-Voucher 核銷，適合提供體驗服務的商戶。' },
+  { cat:'application', q:'申請開店需要提供哪些文件？', a:'基本所需文件包括：有效的商業登記證、公司架構證明、品牌授權書（如適用）、產品目錄等。護理保健及護膚化妝類別需額外提供相關牌照。' },
+  { cat:'application', q:'護理保健及護膚化妝類別有特別要求嗎？', a:'是的。護理保健類商戶需提供相關產品牌照或許可證明。護膚化妝類產品如涉及功能性聲稱，需符合香港法例第231章不良廣告條例規定。' },
+  { cat:'mms', q:'MMS 是什麼？如何登入？', a:'MMS (Merchant Management System) 是 HKTVmall 商戶管理系統，用於管理產品、訂單、庫存等。登入網址：mms.shoalter.com' },
+  { cat:'mms', q:'如何在 MMS 新增/更改銀行戶口？', a:'在 MMS 系統中前往「帳戶設定」→「銀行戶口」頁面，即可新增或更新收款銀行帳戶資料。更改後一般需要 2-3 個工作天審批。' },
+  { cat:'mms', q:'如何建立新用戶帳號？', a:'MMS 管理員可在「用戶管理」頁面新增子帳號，設定不同權限。一般商戶可擁有最多 5 個用戶帳號。' },
+  { cat:'mms', q:'如何使用 MMS 手機應用程式？', a:'MMS 手機應用程式可在 App Store / Google Play 下載，用於隨時隨地管理訂單、查看庫存及接收通知。' },
+  { cat:'listing', q:'如何上載產品至 HKTVmall？', a:'通過 MMS 系統上載產品資料，包括產品名稱、描述、價格、圖片等。建議使用批量上載功能提高效率。' },
+  { cat:'listing', q:'重用 SKU ID 會有什麼後果？', a:'重用 SKU ID 可能導致庫存及銷售數據混乱，並可能觸犯平台規則而被罰款。建議每個產品使用獨立 SKU。' },
+  { cat:'listing', q:'食品類產品有什麼最低食用及保存期限要求？', a:'食品類產品必須標示有效日期，保質期少於 30 日的產品需標示「此日期前食用」；保質期超過 30 日需標示「此日期前最佳」。' },
+  { cat:'delivery', q:'HKTVmall 有哪些派送方式？', a:'主要有標準集運（由 HKTVmall 物流派送）和自送（商戶自行安排送貨）兩種方式。部分商戶亦可選用 3PL 倉儲服務。' },
+  { cat:'delivery', q:'訂單處理時限是多少？', a:'商戶需在收到訂單後 24 小時內確認並安排出貨，否則可能觸發罰款機制。暢銷產品建議使用 3PL 服務以確保時效。' },
+  { cat:'finance', q:'佣金如何計算？何時結算？', a:'佣金按分類碼及適用佣金率計算，每月結算一次。佣金率因產品類別及派送方式而異，詳情可查閱「佣金率與數據」頁面。' },
+  { cat:'finance', q:'什麼是門檻優惠佣金率（Threshold Discounted Rate）？', a:'當商戶每月 GMV 超過指定門檻，可享有更低佣金率優惠。不同類別有不同門檻，詳情請查閱佣金率頁面。' },
+  { cat:'finance', q:'廣告費用如何運作？', a:'商戶可使用自助攻路系統設定廣告計劃，广告費用按點擊或展示收費。Type A Plan 包含 HK$22,000 廣告金可用於推廣。' },
+  { cat:'promo', q:'HKTVmall 有哪些推廣活動可以參加？', a:'主要推廣活動包括：感謝祭、減價日、類別專題推廣等。商戶可通過 MMS 或自助攻路系統報名參加。' },
+  { cat:'promo', q:'金銀銅獎計劃是什麼？', a:'金銀銅獎計劃是 HKTVmall 對表現優秀商戶的獎勵機制，根據 GMV 增長、客戶滿意度等指標評分，獲獎商戶可享有額外推廣資源。' },
+  { cat:'promo', q:'如何提升產品在 HKTVmall 的搜尋排名？', a:'影響排名的因素包括：產品描述完整性、價格競爭力、評價數量及分數、庫存充足度、使用 3PL 服務等。' },
+  { cat:'3pl', q:'什麼類型的商戶適合使用 3PL？', a:'適合使用 3PL 的商戶包括：希望提升配送時效、需要專業倉儲管理、產品種類多或銷量大的商戶。詳情可查閱「3PL 倉儲服務」頁面。' },
+  { cat:'3pl', q:'3PL 服務如何申請？', a:'在 MMS 系統中申請 3PL 服務，選擇「入倉申請」並預約時間。申請一般會即時獲批，批核後可開始使用服務。' },
+  { cat:'tools', q:'HKTVmall 有哪些商戶工具可以使用？', a:'主要工具包括：MMS 商戶管理系統、Exchange 資訊平台、RRMP 評分管理、自助攻路系統、商戶數據分析平台、Academy 教學平台等。' },
+  { cat:'tools', q:'如何聯絡商戶關係經理？', a:'可通過 Exchange 平台發送訊息，或直接電郵您的客戶關係經理。每位商戶均有專屬客戶關係經理跟進。' },
+];
+
+const PENALTY_DATA = [
+  // Table 1: After Complaint/Warning
+  { list:1, sev:'critical', law:'藥劑業及毒藥 Cap. 138', zh:'供應含有受管制毒藥成分的藥劑製品（作為治療的一部分或以其他方式供應）', en:'Supply pharmaceutical products containing regulated poison ingredients', fine:'HK$20,000（每件 SKU）+ 退還過去六個月所有已售貨品款項' },
+  { list:1, sev:'critical', law:'中醫藥條例 Cap. 549', zh:'供應未根據香港法例註冊的中成藥製品；或供應附表一所列之中藥材', en:'Supply proprietary Chinese medicine not registered under HK Regulations', fine:'HK$20,000（每件 SKU）+ 退還過去六個月所有已售貨品款項' },
+  { list:1, sev:'critical', law:'不良廣告（醫藥）Cap. 231', zh:'為產品發布含有受限制醫療聲稱字句的廣告', en:'Publishing product advertisements referring to certain diseases or conditions restricted under the Ordinance', fine:'HK$20,000（每件 SKU）' },
+  { list:1, sev:'serious', law:'公眾衞生及市政 Cap. 132', zh:'商戶未有取得及/或提供有效的營業牌照；或供應的食物在性質、物質或品質方面誤導他人', en:'Merchant offering food services cannot provide valid licenses', fine:'HK$1,000（每件 SKU）' },
+  { list:1, sev:'serious', law:'商品說明條例 Cap. 362', zh:'供應已應用虛假或具誤導成分的商品說明的服務；或作出構成餌誘式廣告宣傳的營業行為', en:'Supply services with false trade description applied', fine:'HK$1,000（每件 SKU）' },
+  { list:1, sev:'serious', law:'侵犯版權', zh:'未經版權擁有者的准許發布其原創作品', en:'Use or publishing of copyright materials without permission', fine:'HK$1,000（每件 SKU）' },
+  { list:1, sev:'serious', law:'淫褻及不雅物品 Cap. 390', zh:'展示不雅事物（包括廣告）', en:'Display of any indecent content (including advertisements)', fine:'HK$1,000（每件 SKU）' },
+  { list:1, sev:'moderate', law:'其他法律法規', zh:'違反任何其他適用法律或法規', en:'Violation of any other applicable law or regulation', fine:'HK$1,000（每件 SKU）' },
+  // Table 2: Determined by HKTVmall
+  { list:2, sev:'serious', law:'藥劑業及毒藥 Cap. 138', zh:'供應含有受管制毒藥成分的藥劑製品（HKTVmall 自行發現）', en:'Supply pharmaceutical products (determined by HKTVmall)', fine:'HK$500（每件 SKU）' },
+  { list:2, sev:'serious', law:'中醫藥條例 Cap. 549', zh:'供應未根據香港法例註冊的中成藥製品（HKTVmall 自行發現）', en:'Supply unregistered proprietary Chinese medicine (determined by HKTVmall)', fine:'HK$500（每件 SKU）' },
+  { list:2, sev:'serious', law:'不良廣告（醫藥）Cap. 231', zh:'為產品發布含有受限制醫療聲稱字句的廣告（HKTVmall 自行發現）', en:'Publishing product advertisements with restricted medical claims (determined by HKTVmall)', fine:'HK$500（每件 SKU）' },
+  { list:2, sev:'moderate', law:'公眾衞生及市政 Cap. 132', zh:'未有提供有效的食物業牌照（HKTVmall 自行發現）', en:'No valid food license (determined by HKTVmall)', fine:'HK$500（每件 SKU）' },
+  { list:2, sev:'moderate', law:'商品說明條例 Cap. 362', zh:'供應已應用虛假或具誤導性的商品說明（HKTVmall 自行發現）', en:'Supply services with false trade description (determined by HKTVmall)', fine:'HK$500（每件 SKU）' },
+  { list:2, sev:'moderate', law:'侵犯版權', zh:'未經版權擁有者的准許發布其原創作品（HKTVmall 自行發現）', en:'Use or publishing of copyright materials without permission (determined by HKTVmall)', fine:'HK$500（每件 SKU）' },
+  { list:2, sev:'moderate', law:'淫褻及不雅物品 Cap. 390', zh:'展示不雅事物（HKTVmall 自行發現）', en:'Display of any indecent content (determined by HKTVmall)', fine:'HK$500（每件 SKU）' },
+  { list:2, sev:'moderate', law:'其他法律法規', zh:'違反任何其他適用法律或法規（HKTVmall 自行發現）', en:'Violation of any other applicable law or regulation (determined by HKTVmall)', fine:'HK$500（每件 SKU）' },
+  // Table 3: Other Violations
+  { list:3, sev:'critical', law:'未授權客戶轉移 — 客戶資料', zh:'未授權情況下使用或盜取客戶資料', en:'Unauthorized or improper use of customers\' data', fine:'HK$20,000 + 即時終止合約' },
+  { list:3, sev:'critical', law:'未授權客戶轉移 — 店舖頁面', zh:'在店舖介紹頁面展示任何促銷資訊（引導至平台外渠道）', en:'Displaying promotional information on store page directing customers outside HKTVmall', fine:'HK$1,000（每店舖）' },
+  { list:3, sev:'critical', law:'未授權客戶轉移 — 貨品描述', zh:'在貨品描述頁面展示任何促銷資訊（引導至平台外渠道）', en:'Displaying promotional information on product description page directing customers outside HKTVmall', fine:'HK$1,000（每件 SKU）' },
+  { list:3, sev:'serious', law:'未授權客戶轉移 — 貨品包裝', zh:'在貨品包裝上展示任何促銷資訊（引導至平台外渠道）', en:'Displaying promotional information on goods packaging directing customers outside HKTVmall', fine:'HK$100（每個包裝）' },
+  { list:3, sev:'critical', law:'未授權客戶轉移 — 外部購物渠道', zh:'展示 HKTVmall 平台以外的購物渠道或方法', en:'Displaying or placing inappropriate marketing techniques directing to merchant\'s website', fine:'HK$1,000（每店舖）' },
+  { list:3, sev:'serious', law:'未授權客戶轉移 — 聯絡資料', zh:'在貨品本身或其包裝、貨品描述頁面或店舖介紹頁面上展示商戶聯絡資料', en:'Displaying merchant contact information on store pages or product description pages', fine:'HK$100（每店舖）' },
+  { list:3, sev:'moderate', law:'出售非賣品或試用裝', zh:'出售貨品上印有「Not for Sale」、「Sample」、「Tester」等字樣的貨品', en:'Supply products marked as \'Not for Sale\', \'Sample\', \'Tester\'', fine:'HK$500（每件 SKU）' },
+  { list:3, sev:'serious', law:'虛假評價', zh:'在 HKTVmall 平台的留言頁上作虛假評價', en:'Posting fake reviews or comments on HKTVmall platform', fine:'HK$500（每則留言）' },
+  { list:3, sev:'critical', law:'不遵守市場推廣規則 — 大型活動', zh:'不遵守 HKTVmall 大型市場推廣規則（如感謝祭及季節性的營銷活動）', en:'Non-compliance with major promotional events', fine:'取決於可能導致的損失和客戶訂單價值' },
+  { list:3, sev:'moderate', law:'不遵守市場推廣規則 — 其他活動', zh:'不遵守 HKTVmall 其他市場推廣規則', en:'Non-compliance with other HKTVmall promotional rules', fine:'HK$100（每件 SKU）' },
+  { list:3, sev:'moderate', law:'不遵守運營/公平交易/產品安全規則', zh:'不遵守 HKTVmall 有關營運、公平交易和產品安全的規則、指引或通知', en:'Non-compliance with HKTVmall rules on operations, fair trading and product safety', fine:'HK$100（每件 SKU）' },
+  { list:3, sev:'moderate', law:'未提供清晰/適時的產品描述', zh:'沒有向 HKTVmall 提供清晰和/或適時的產品描述', en:'Failure to provide clear and/or timely product descriptions to HKTVmall', fine:'HK$100（每件 SKU）' },
+  { list:3, sev:'moderate', law:'由商戶取消訂單', zh:'由商戶主動取消訂單', en:'Order cancellation initiated by the merchant', fine:'HK$100（每個訂單）' },
+];
+
+// ── STATE ──────────────────────────────────────────────────────────
+let state = {
+  channel: 'email',
+  lang: 'bilingual',
+  plans: [],
+  merchantName: '',
+  businessDesc: '',
+  gmvVisible: true,
+  commMode: 'standard',
+  activeCat: 'all',
+  faqCat: 'all',
+  penaltyType: 'all',
+  penaltySev: 'all',
+};
+
+// ── NAVIGATION ────────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── PLAN SELECTION ────────────────────────────────────────────────
+document.querySelectorAll('.plan-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.classList.toggle('selected');
+    const cb = chip.querySelector('input');
+    cb.checked = chip.classList.contains('selected');
+    updatePlans();
+    validateForm();
+  });
+});
+
+function updatePlans() {
+  state.plans = Array.from(document.querySelectorAll('.plan-chip.selected')).map(c => c.dataset.plan);
+}
+
+// ── CHANNEL & LANGUAGE ───────────────────────────────────────────
+function setChannel(ch) {
+  state.channel = ch;
+  document.querySelectorAll('[data-channel]').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-channel="'+ch+'"]').classList.add('active');
+  document.getElementById('preview-title').textContent = ch === 'email' ? 'Email 預覽' : 'WhatsApp 預覽';
+}
+
+function setLang(lg) {
+  state.lang = lg;
+  document.querySelectorAll('[data-lang]').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-lang="'+lg+'"]').classList.add('active');
+  const tags = document.getElementById('preview-lang-tags');
+  if (lg === 'bilingual') tags.innerHTML = '<span class="preview-lang-zh">中英雙語</span>';
+  else if (lg === 'zh') tags.innerHTML = '<span class="preview-lang-zh">中文</span>';
+  else tags.innerHTML = '<span class="preview-lang-en">English</span>';
+}
+
+// ── FORM VALIDATION ───────────────────────────────────────────────
+function validateForm() {
+  const name = document.getElementById('merchant-name').value.trim();
+  const btn = document.getElementById('generate-btn');
+  const hint = document.getElementById('form-hint');
+  if (state.plans.length === 0) {
+    btn.disabled = true;
+    hint.textContent = '⬆ 請先選擇至少一個招商計劃';
+  } else if (!name) {
+    btn.disabled = true;
+    hint.textContent = '⬆ 請輸入商戶名稱';
+  } else {
+    btn.disabled = false;
+    hint.textContent = '';
+  }
+}
+
+// ── TEXT GENERATION ───────────────────────────────────────────────
+function generateText() {
+  const name = document.getElementById('merchant-name').value.trim();
+  const desc = document.getElementById('business-desc').value.trim();
+  const plans = state.plans;
+  const lang = state.lang;
+  const channel = state.channel;
+
+  const planNames = {
+    typeA: { zh:'Type A Plan（本地常規商戶）', en:'Type A Plan (Local Standard Merchant)' },
+    overseas: { zh:'Overseas Plan（海外跨境商戶）', en:'Overseas Plan (Cross-border Merchant)' },
+    service: { zh:'Service Deal（服務類商戶）', en:'Service Deal (Service Merchant)' },
+  };
+
+  let text = '';
+  const planList = plans.map(p => planNames[p]).filter(Boolean);
+
+  if (lang === 'zh' || lang === 'bilingual') {
+    text += `Subject: HKTVmall 招商機會 — 為 ${name} 開啟電商新里程\n\n`;
+    text += `尊敬的 ${name} 團隊：\n\n`;
+    text += `您好！我是 HKTVmall 商戶關係團隊成員，得知貴司從事${desc || '相關業務'}，深感興趣。\n\n`;
+    text += `HKTVmall 作為香港領先電商平台，現正積極擴充優質商戶網絡。我們提供以下招商計劃供貴司考慮：\n\n`;
+    planList.forEach((p, i) => {
+      text += `${i+1}. ${p.zh}\n`;
+    });
+    text += `\n如蒙垂詢，我可提供詳細計劃書及費用說明。期待與貴司展開合作！\n\n`;
+    text += `祝 商祺\nHKTVmall 商戶關係團隊\n`;
+  }
+
+  if (lang === 'bilingual') text += '\n─────────────────────\n\n';
+
+  if (lang === 'en' || lang === 'bilingual') {
+    text += `Subject: HKTVmall Merchant Partnership Opportunity — ${name}\n\n`;
+    text += `Dear ${name} Team,\n\n`;
+    text += `I am reaching out from the HKTVmall Business Development team. Having learned about ${name}'s ${desc || 'business operations'}, we believe there may be an excellent opportunity for partnership.\n\n`;
+    text += `HKTVmall is Hong Kong's leading e-commerce platform, actively expanding our network of quality merchants. We offer the following merchant plans:\n\n`;
+    planList.forEach((p, i) => {
+      text += `${i+1}. ${p.en}\n`;
+    });
+    text += `\nI would be happy to provide a detailed proposal and fee schedule. We look forward to exploring this partnership with you!\n\n`;
+    text += `Best regards,\nHKTVmall Business Development Team\n`;
+  }
+
+  // Show preview
+  document.getElementById('preview-placeholder').style.display = 'none';
+  const content = document.getElementById('preview-content');
+  content.style.display = 'block';
+  content.innerHTML = text.replace(/\n/g, '<br>');
+  state.generatedText = text;
+}
+
+function copyPreview() {
+  if (state.generatedText) {
+    copyText(state.generatedText);
+  }
+}
+
+function downloadPreview() {
+  if (!state.generatedText) return;
+  const blob = new Blob([state.generatedText], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'HKTVmall_招商文本.txt';
+  a.click();
+}
+
+// ── COMMISSION ─────────────────────────────────────────────────────
+function renderCommission() {
+  const container = document.getElementById('category-list');
+  const filter = document.getElementById('cat-search').value.toLowerCase();
+  const cat = state.activeCat;
+
+  let data = COMMISSION_DATA;
+  if (filter) data = data.filter(c => c.name.toLowerCase().includes(filter) || c.id.includes(filter));
+  if (cat !== 'all') data = data.filter(c => c.id === cat || c.id.startsWith(cat));
+
+  container.innerHTML = data.map(c => `
+    <div class="cat-btn" onclick="toggleCatDetail('${c.id}')">
+      <div class="cat-name">${c.name}</div>
+      <div class="cat-count">${c.count} 個分類碼 · ${c.active} 碼有數據</div>
+      <div class="cat-rate">${c.standard}${c.threshold !== '—' ? ' · ' + c.threshold : ''}</div>
+      ${state.gmvVisible && c.gmv !== '—' ? `<div class="cat-gmv">${c.gmv}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function toggleCatDetail(id) { /* 預留扩展 */ }
+
+function toggleGMV() {
+  state.gmvVisible = !state.gmvVisible;
+  renderCommission();
+}
+
+function setCommissionMode(mode) {
+  state.commMode = mode;
+  renderCommission();
+}
+
+function filterCat(cat) {
+  state.activeCat = cat;
+  document.querySelectorAll('#page-commission .btn-outline, #page-commission .btn-primary').forEach(b => b.classList.remove('btn-primary'));
+  event.target.classList.add('btn-primary');
+  renderCommission();
+}
+
+function filterCategories() { renderCommission(); }
+
+// ── FAQ ───────────────────────────────────────────────────────────
+function renderFAQ() {
+  const container = document.getElementById('faq-list');
+  const filter = document.getElementById('faq-search').value.toLowerCase();
+  let data = FAQ_DATA;
+  if (filter) data = data.filter(f => f.q.toLowerCase().includes(filter) || f.a.toLowerCase().includes(filter));
+  if (state.faqCat !== 'all') data = data.filter(f => f.cat === state.faqCat);
+
+  const cats = {};
+  data.forEach(f => { if (!cats[f.cat]) cats[f.cat] = []; cats[f.cat].push(f); });
+
+  const catNames = {
+    application:'開店申請', mms:'MMS 後台操作', listing:'產品上架',
+    delivery:'訂單與派送', finance:'佣金與財務', promo:'推廣活動',
+    '3pl':'3PL 倉儲服務', tools:'常用工具與連結'
+  };
+
+  let html = '';
+  Object.keys(cats).forEach(cat => {
+    html += `<div class="faq-cat-title">${catNames[cat] || cat}</div>`;
+    html += cats[cat].map(f => `
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">${f.q}</div>
+        <div class="faq-a">${f.a}</div>
+      </div>
+    `).join('');
+  });
+  container.innerHTML = html;
+}
+
+function toggleFAQ(el) { el.classList.toggle('open'); }
+
+function filterFAQCat(cat) {
+  state.faqCat = cat;
+  renderFAQ();
+}
+
+function filterFAQ() { renderFAQ(); }
+
+// ── PENALTY ───────────────────────────────────────────────────────
+function renderPenalties() {
+  const container = document.getElementById('penalty-list');
+  const filter = document.getElementById('penalty-search').value.toLowerCase();
+  let data = PENALTY_DATA;
+  if (filter) data = data.filter(p => p.law.toLowerCase().includes(filter) || p.zh.includes(filter) || p.fine.includes(filter));
+  if (state.penaltyType !== 'all') data = data.filter(p => 'list' + p.list === state.penaltyType);
+  if (state.penaltySev !== 'all') data = data.filter(p => p.sev === state.penaltySev);
+
+  const listNames = { 1:'列表一：投訴/警告後罰款', 2:'列表二：HKTVmall 自行發現', 3:'列表三：其他違規行為' };
+  const sevClass = { critical:'severity-critical', serious:'severity-serious', moderate:'severity-moderate' };
+  const sevLabel = { critical:'極嚴重', serious:'嚴重', moderate:'中等' };
+
+  let html = '';
+  [1,2,3].forEach(listNum => {
+    const items = data.filter(p => p.list === listNum);
+    if (items.length === 0) return;
+    html += `<div class="list-header">${listNames[listNum]} — Table ${listNum === 1 ? '1: After Complaint / Warning Notice' : listNum === 2 ? '2: Determined by HKTVmall' : '3: Other Violations'}</div>`;
+    html += `<table class="penalty-table"><thead><tr><th>條例</th><th>嚴重程度</th><th>罰款</th><th></th></tr></thead><tbody>`;
+    items.forEach(p => {
+      html += `<tr>
+        <td><div style="font-weight:700;color:var(--primary-dark)">${p.law}</div><div style="font-size:0.75rem;color:var(--muted);margin-top:3px">${p.zh}</div></td>
+        <td><span class="severity-badge ${sevClass[p.sev]}">${sevLabel[p.sev]}</span></td>
+        <td style="font-weight:600;color:var(--accent)">${p.fine}</td>
+        <td><button class="btn-copy" onclick="copyText('${p.law}: ${p.zh} — ${p.fine}')">複製</button></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  });
+  container.innerHTML = html;
+}
+
+function filterPenaltyType(t) {
+  state.penaltyType = t;
+  renderPenalties();
+}
+
+function filterPenaltySev(s) {
+  state.penaltySev = s;
+  renderPenalties();
+}
+
+function filterPenalties() { renderPenalties(); }
+
+function copyAllPenalties() {
+  const text = PENALTY_DATA.map(p => `${p.law}: ${p.zh} — ${p.fine}`).join('\n');
+  copyText(text);
+}
+
+// ── RESET ────────────────────────────────────────────────────────
+function resetAll() {
+  document.querySelectorAll('.plan-chip').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('input[name="plan"]').forEach(c => c.checked = false);
+  document.getElementById('merchant-name').value = '';
+  document.getElementById('business-desc').value = '';
+  state.plans = [];
+  state.generatedText = '';
+  document.getElementById('preview-placeholder').style.display = 'block';
+  document.getElementById('preview-content').style.display = 'none';
+  document.getElementById('preview-content').innerHTML = '';
+  validateForm();
+  toast('已重置！');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => toast('已複製到剪貼板！'));
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ───────────────────────────────────────────────────────────
+renderCommission();
+renderFAQ();
+renderPenalties();
+validateForm();
+</script>
+</body>
+</html>
