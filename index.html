@@ -495,6 +495,10 @@ textarea { resize: vertical; line-height: 1.6; }
         <div class="stat-chip"><div class="val">3,883</div><div class="lbl">個分類碼有 GMV 數據</div></div>
       </div>
 
+      <div class="search-box" style="margin-bottom:1rem">
+        <input type="text" id="cat-search" placeholder="搜尋分類碼、分類名稱、子分類（如咖啡、奶粉）..." oninput="filterCategories()">
+      </div>
+
       <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem">
         <button class="btn btn-sm btn-primary" onclick="filterCat('all')" id="cat-btn-all">全部</button>
         <button class="btn btn-sm btn-outline" onclick="filterCat('超級市場')" id="cat-btn-超級市場">超級市場 499</button>
@@ -1073,6 +1077,7 @@ function renderCommission() {
 
   // Group by main category
   const grouped = {};
+  let totalMatchCount = 0;
   commissionData.forEach(item => {
     if (filter && !item.code.toLowerCase().includes(filter) &&
         !item.main.toLowerCase().includes(filter) &&
@@ -1082,6 +1087,7 @@ function renderCommission() {
     }
     if (cat !== 'all' && !item.main.includes(cat)) return;
 
+    totalMatchCount++;
     if (!grouped[item.main]) {
       grouped[item.main] = { name: item.main, subs: {}, total: 0, stdRates: new Set(), merchRates: new Set() };
     }
@@ -1099,6 +1105,10 @@ function renderCommission() {
   });
 
   const sortedMains = Object.values(grouped).sort((a, b) => b.total - a.total);
+
+  // Update stats display
+  const filterText = filter ? `<span style="color:var(--accent)">（搜尋：「${filter}」）</span>` : '';
+  document.getElementById('total-categories').innerHTML = totalMatchCount + ' ' + filterText;
 
   container.innerHTML = sortedMains.map(main => {
     const isExpanded = expandedCats.has(main.name);
