@@ -212,7 +212,6 @@ textarea { resize: vertical; line-height: 1.6; }
 .search-box { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
 .search-box input { flex: 1; }
 
-/* ── 3PL Page ── */
 .hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
 .hero-stat {
   background: linear-gradient(135deg, #106946, #0D5238);
@@ -347,7 +346,6 @@ textarea { resize: vertical; line-height: 1.6; }
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('generator')">✦ 文本生成器</button>
     <button class="nav-tab" onclick="showPage('commission')">◈ 佣金率與數據</button>
-    <button class="nav-tab" onclick="showPage('3pl')">◉ 3PL 倉儲服務</button>
     <button class="nav-tab" onclick="showPage('faq')">◎ FAQ 常見問題</button>
     <button class="nav-tab" onclick="showPage('penalty')">⚠ 罰款清單</button>
   </div>
@@ -525,181 +523,6 @@ textarea { resize: vertical; line-height: 1.6; }
       <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem">
         ⚠️ 佣金率以 MMS 系統內顯示數字為準 · GMV 數據來源：bycat(2).xlsx（2026 年 1–4 月）
       </p>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- PAGE 3: 3PL -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <div id="page-3pl" class="page">
-    <div class="card">
-      <h1 style="font-size:1.3rem;margin-bottom:0.3rem">HKTV 3PL 倉儲服務</h1>
-      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1.5rem">By Shoalter Technology Ltd · 香港科技探索有限公司成員 · 資料更新：2026年1月</p>
-
-      <button class="btn-copy" onclick="copyText(document.getElementById('pl-3pl-main').innerText)" style="margin-bottom:1rem">📋 複製完整 3PL 資訊</button>
-
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="val">144,000+</div><div class="lbl">平方呎倉庫</div></div>
-        <div class="hero-stat"><div class="val">8 小時</div><div class="lbl">最快派送</div></div>
-        <div class="hero-stat"><div class="val">+42%</div><div class="lbl">SKU GMV 增長</div></div>
-        <div class="hero-stat"><div class="val">364 日</div><div class="lbl">全天候運作</div></div>
-      </div>
-
-      <h2>服務概覽</h2>
-      <div class="card-title">主要服務（可直接複製貼上）</div>
-      <div class="preview-box" id="pl-3pl-main">
-HKTV 3PL 主要服務：
-• 倉存服務：靈活訂閱，常溫/冷氣環境（約20-25°C）
-• 訂單處理：自動化撿貨及包裝，符合 HKTVmall 包裝指引
-• 快速配送：最快 8 小時派送（未來支援最快 3 小時）
-• 增值服務：盤點、出倉、臨時存倉
-      </div>
-      <button class="btn-copy" onclick="copyText(document.getElementById('pl-3pl-main').innerText)">複製</button>
-
-      <h2 style="margin-top:1.5rem">倉存規格</h2>
-      <div class="preview-box">
-儲存箱尺寸：60 x 40 x 32 厘米（約 0.052 立方米）
-貨物尺寸限制：49.5 x 32.5 x 25 厘米
-每箱最大重量：17 公斤
-箱型：1格 / 2格 / 4格
-每格只能放置一款貨品（相同有效日期）
-      </div>
-      <button class="btn-copy" onclick="copyText(this.previousElementSibling.innerText)">複製</button>
-
-      <h2 style="margin-top:1.5rem">選用 HKTV 3PL 的優勢</h2>
-
-      <h3>GMV 增長數據</h3>
-      <div class="preview-box">
-加入 3PL 後的 GMV 增長數據：
-• 部分產品使用 3PL：GMV 增長比標準集運多 72%
-• 全店使用 3PL：GMV 增長比同類別平均多 70%
-• 3PL 商戶每月平均增幅：7%
-• 新商戶開店即加入 3PL：首三個月 GMV 比同期商戶高 57%
-
-各類別 SKU GMV 增幅（加入前後對比）：
-  母嬰育兒（尿片）：+150%
-  超級市場（有機健康食品）：+138%
-  家品傢俬（浴室）：+120%
-  超級市場（家居清潔）：+112%
-  護膚化妝（卸妝）：+100%
-      </div>
-      <button class="btn-copy" onclick="copyText(this.previousElementSibling.innerText)">複製</button>
-
-      <h3 style="margin-top:1rem">曝光率優勢</h3>
-      <div class="preview-box">
-3PL 產品的額外曝光優勢：
-• 8 小時派送專屬標籤
-• 顯示於 HKTVmall 8 小時專區
-• 搜尋關鍵字時優先顯示
-• 瀏覽產品類別時優先排列
-• 享有額外推廣活動支援
-      </div>
-      <button class="btn-copy" onclick="copyText(this.previousElementSibling.innerText)">複製</button>
-
-      <h2 style="margin-top:1.5rem">收費標準 — Standard Plan</h2>
-
-      <h3>A. 每月訂閱費（每一儲存箱）</h3>
-      <table class="price-table">
-        <thead><tr><th>級別</th><th>常溫</th><th>冷氣</th></tr></thead>
-        <tbody>
-          <tr><td>第一級 (1–199 箱)</td><td>$70</td><td>$71</td></tr>
-          <tr><td>第二級 (200–499 箱)</td><td>$68</td><td>$69</td></tr>
-          <tr><td>第三級 (500–999 箱)</td><td>$60</td><td>$61</td></tr>
-          <tr><td>第四級 (1,000+ 箱)</td><td>$55</td><td>$56</td></tr>
-        </tbody>
-      </table>
-
-      <h3 style="margin-top:1rem">B. 服務費</h3>
-      <table class="price-table">
-        <thead><tr><th>服務項目</th><th>收費</th></tr></thead>
-        <tbody>
-          <tr><td>訂單處理費（首件產品）</td><td>$6.5 / $6 / $5.5 / $5（按級別）</td></tr>
-          <tr><td>相同產品（同一訂單）</td><td>$1 / 額外每件</td></tr>
-          <tr><td>入倉費（每一儲存箱）</td><td>$3.5</td></tr>
-          <tr><td>出倉費（每一儲存箱）</td><td>$10</td></tr>
-        </tbody>
-      </table>
-      <p style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem">* 訂單處理費已涵蓋包裝物料費用，易碎或敏感物品須收取額外費用</p>
-
-      <div class="preview-box" style="background:#E8F5EE">
-        <strong>3PL Standard Plan 收費摘要：</strong><br>
-月費：$55–$71/箱（按數量及溫度）<br>
-訂單處理：$5–$6.5/件（按級別）<br>
-入倉費：$3.5/箱 | 出倉費：$10/箱
-      </div>
-      <button class="btn-copy" onclick="copyText(this.previousElementSibling.innerText)">複製</button>
-
-      <h2 style="margin-top:1.5rem">大貨服務 & 增值服務</h2>
-
-      <h3>大貨服務（原箱出售產品）</h3>
-      <table class="price-table">
-        <thead><tr><th>服務項目</th><th>收費</th></tr></thead>
-        <tbody>
-          <tr><td>每月存倉費（每 CBM）</td><td>$600</td></tr>
-          <tr><td>訂單處理費（10kg 以下）</td><td>$10/件</td></tr>
-          <tr><td>訂單處理費（10.1–15kg）</td><td>$12/件</td></tr>
-          <tr><td>訂單處理費（15.1–20kg）</td><td>$15/件</td></tr>
-        </tbody>
-      </table>
-      <p style="font-size:0.72rem;color:var(--muted)">需另簽 1 年合約，最低消費 2 CBM。三邊總和不超過 180cm，其中一邊不超過 130cm</p>
-
-      <h3 style="margin-top:1rem">其他增值服務</h3>
-      <table class="price-table">
-        <thead><tr><th>服務</th><th>收費</th></tr></thead>
-        <tbody>
-          <tr><td>臨時存倉費</td><td>$7/箱/日</td></tr>
-          <tr><td>盤點收費</td><td>$7/箱</td></tr>
-          <tr><td>原箱拆卸（1格）</td><td>$6/箱</td></tr>
-          <tr><td>原箱拆卸（2格）</td><td>$9/箱</td></tr>
-          <tr><td>原箱拆卸（4格）</td><td>$12/箱</td></tr>
-        </tbody>
-      </table>
-
-      <h2 style="margin-top:1.5rem">服務流程</h2>
-      <div class="process-steps">
-        <div class="process-step">
-          <div class="step-icon">1</div>
-          <div class="step-content">
-            <div class="step-title">網上預約入倉</div>
-            <div class="step-desc">於 MMS 系統隨時申請入倉，選擇合適日期及時間，申請即時批核</div>
-          </div>
-        </div>
-        <div class="process-step">
-          <div class="step-icon">2</div>
-          <div class="step-content">
-            <div class="step-title">準備入倉貨品</div>
-            <div class="step-desc">貨品表面必須有條碼標籤 (Barcode label)，使用手機應用程式掃描配對</div>
-          </div>
-        </div>
-        <div class="process-step">
-          <div class="step-icon">3</div>
-          <div class="step-content">
-            <div class="step-title">將貨品送到 HKTV 3PL 倉庫</div>
-            <div class="step-desc">根據預約時間到倉庫自助入倉，系統自動更新庫存</div>
-          </div>
-        </div>
-        <div class="process-step">
-          <div class="step-icon">4</div>
-          <div class="step-content">
-            <div class="step-title">倉儲管理 → 接收訂單 → 撿貨及包裝</div>
-            <div class="step-desc">自動化系統處理訂單，MMS 可即時查看庫存數量及設定補貨提示</div>
-          </div>
-        </div>
-        <div class="process-step">
-          <div class="step-icon">5</div>
-          <div class="step-content">
-            <div class="step-title">由 HKTVmall 物流配送</div>
-            <div class="step-desc">最快 8 小時送達，附有訂單追蹤，顧客可同步得知訂單狀態</div>
-          </div>
-        </div>
-      </div>
-
-      <h2 style="margin-top:1.5rem">聯絡方式</h2>
-      <div class="contact-row">
-        <div class="contact-chip">📧 電郵：<a href="mailto:3pl@hktv.com.hk"><EMAIL></a></div>
-        <div class="contact-chip">📱 WhatsApp：<a href="https://wa.me/85254804024">5480 4024</a></div>
-      </div>
-      <p style="font-size:0.78rem;color:var(--muted);margin-top:0.8rem">如需進一步了解詳情，請聯絡您的客戶關係經理，或直接透過以上渠道聯絡 3PL 團隊。</p>
     </div>
   </div>
 
