@@ -546,7 +546,6 @@ textarea { resize: vertical; line-height: 1.6; }
         <button class="btn btn-sm btn-outline" onclick="filterFAQCat('delivery')">訂單與派送 2</button>
         <button class="btn btn-sm btn-outline" onclick="filterFAQCat('finance')">佣金與財務 3</button>
         <button class="btn btn-sm btn-outline" onclick="filterFAQCat('promo')">推廣活動 3</button>
-        <button class="btn btn-sm btn-outline" onclick="filterFAQCat('3pl')">3PL 倉儲服務 2</button>
         <button class="btn btn-sm btn-outline" onclick="filterFAQCat('tools')">常用工具與連結 2</button>
       </div>
 
@@ -680,16 +679,14 @@ const FAQ_DATA = [
   { cat:'listing', q:'如何上載產品至 HKTVmall？', a:'通過 MMS 系統上載產品資料，包括產品名稱、描述、價格、圖片等。建議使用批量上載功能提高效率。' },
   { cat:'listing', q:'重用 SKU ID 會有什麼後果？', a:'重用 SKU ID 可能導致庫存及銷售數據混乱，並可能觸犯平台規則而被罰款。建議每個產品使用獨立 SKU。' },
   { cat:'listing', q:'食品類產品有什麼最低食用及保存期限要求？', a:'食品類產品必須標示有效日期，保質期少於 30 日的產品需標示「此日期前食用」；保質期超過 30 日需標示「此日期前最佳」。' },
-  { cat:'delivery', q:'HKTVmall 有哪些派送方式？', a:'主要有標準集運（由 HKTVmall 物流派送）和自送（商戶自行安排送貨）兩種方式。部分商戶亦可選用 3PL 倉儲服務。' },
-  { cat:'delivery', q:'訂單處理時限是多少？', a:'商戶需在收到訂單後 24 小時內確認並安排出貨，否則可能觸發罰款機制。暢銷產品建議使用 3PL 服務以確保時效。' },
+  { cat:'delivery', q:'HKTVmall 有哪些派送方式？', a:'主要有標準集運（由 HKTVmall 物流派送）和自送（商戶自行安排送貨）兩種方式。' },
+  { cat:'delivery', q:'訂單處理時限是多少？', a:'商戶需在收到訂單後 24 小時內確認並安排出貨，否則可能觸發罰款機制。' },
   { cat:'finance', q:'佣金如何計算？何時結算？', a:'佣金按分類碼及適用佣金率計算，每月結算一次。佣金率因產品類別及派送方式而異，詳情可查閱「佣金率與數據」頁面。' },
   { cat:'finance', q:'什麼是門檻優惠佣金率（Threshold Discounted Rate）？', a:'當商戶每月 GMV 超過指定門檻，可享有更低佣金率優惠。不同類別有不同門檻，詳情請查閱佣金率頁面。' },
   { cat:'finance', q:'廣告費用如何運作？', a:'商戶可使用自助攻路系統設定廣告計劃，广告費用按點擊或展示收費。Type A Plan 包含 HK$22,000 廣告金可用於推廣。' },
   { cat:'promo', q:'HKTVmall 有哪些推廣活動可以參加？', a:'主要推廣活動包括：感謝祭、減價日、類別專題推廣等。商戶可通過 MMS 或自助攻路系統報名參加。' },
   { cat:'promo', q:'金銀銅獎計劃是什麼？', a:'金銀銅獎計劃是 HKTVmall 對表現優秀商戶的獎勵機制，根據 GMV 增長、客戶滿意度等指標評分，獲獎商戶可享有額外推廣資源。' },
-  { cat:'promo', q:'如何提升產品在 HKTVmall 的搜尋排名？', a:'影響排名的因素包括：產品描述完整性、價格競爭力、評價數量及分數、庫存充足度、使用 3PL 服務等。' },
-  { cat:'3pl', q:'什麼類型的商戶適合使用 3PL？', a:'適合使用 3PL 的商戶包括：希望提升配送時效、需要專業倉儲管理、產品種類多或銷量大的商戶。' },
-  { cat:'3pl', q:'3PL 服務如何申請？', a:'在 MMS 系統中申請 3PL 服務，選擇「入倉申請」並預約時間。申請一般會即時獲批，批核後可開始使用服務。' },
+  { cat:'promo', q:'如何提升產品在 HKTVmall 的搜尋排名？', a:'影響排名的因素包括：產品描述完整性、價格競爭力、評價數量及分數、庫存充足度等。' },
   { cat:'tools', q:'HKTVmall 有哪些商戶工具可以使用？', a:'主要工具包括：MMS 商戶管理系統、Exchange 資訊平台、RRMP 評分管理、自助攻路系統、商戶數據分析平台、Academy 教學平台等。' },
   { cat:'tools', q:'如何聯絡商戶關係經理？', a:'可通過 Exchange 平台發送訊息，或直接電郵您的客戶關係經理。每位商戶均有專屬客戶關係經理跟進。' },
 ];
@@ -1085,7 +1082,7 @@ function renderFAQ() {
   const catNames = {
     application:'開店申請', mms:'MMS 後台操作', listing:'產品上架',
     delivery:'訂單與派送', finance:'佣金與財務', promo:'推廣活動',
-    '3pl':'3PL 倉儲服務', tools:'常用工具與連結'
+    tools:'常用工具與連結'
   };
 
   let html = '';
