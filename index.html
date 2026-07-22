@@ -1134,7 +1134,7 @@ function renderCommission() {
 
     // Get GMV info if available
     const gmvInfo = GMV_SUMMARY[main.name] || { gmv: '-', active: main.total, threshold: false };
-    const gmvHtml = state.gmvVisible && gmvInfo.gmv !== '-' ? `<div class="cat-gmv">\${gmvInfo.gmv} · \${gmvInfo.active} 碼有數據</div>` : '';
+    const gmvHtml = state.gmvVisible && gmvInfo.gmv !== '-' ? `<div class="cat-gmv">${gmvInfo.gmv} · ${gmvInfo.active} 碼有數據</div>` : '';
     const thresholdBadge = gmvInfo.threshold ? '<span style="background:#FFF3E0;color:#E47D21;font-size:0.65rem;padding:1px 6px;border-radius:4px;margin-left:0.3rem">含門檻優惠</span>' : '';
     const stdRate = main.stdRates.size > 0 ? Array.from(main.stdRates).join('/') + '%' : '-';
     const merchRate = main.merchRates.size > 0 ? Array.from(main.merchRates).join('/') + '%' : '-';
