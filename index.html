@@ -1049,6 +1049,25 @@ let commissionData = [];
 let commissionLoaded = false;
 let expandedCats = new Set();
 
+// GMV summary data by category (from bycat data)
+const GMV_SUMMARY = {
+  '超級市場 Supermarket': { gmv:'月均 HK$283.7M / 總計 HK$1,134.7M', active:473, threshold:false },
+  '護理保健 Personal Care & Health': { gmv:'月均 HK$128.9M / 總計 HK$515.6M', active:256, threshold:false },
+  '護膚化妝 Skincare & Makeup': { gmv:'月均 HK$33.0M / 總計 HK$132.0M', active:251, threshold:false },
+  '家品傢俬 Housewares': { gmv:'月均 HK$24.6M / 總計 HK$98.3M', active:462, threshold:true },
+  '女士服飾 Women\'s Fashion': { gmv:'月均 HK$11.2M / 總計 HK$44.7M', active:92, threshold:true },
+  '男士服飾 Men\'s Fashion': { gmv:'月均 HK$1.4M / 總計 HK$5.5M', active:67, threshold:true },
+  '母嬰育兒 Mother & Baby': { gmv:'月均 HK$25.5M / 總計 HK$102.0M', active:260, threshold:false },
+  '童裝 Kids\' Fashion': { gmv:'月均 HK$235K / 總計 HK$937K', active:34, threshold:true },
+  '寵物用品 Pets': { gmv:'月均 HK$77.6M / 總計 HK$310.4M', active:299, threshold:false },
+  '玩具圖書 Toys & Books': { gmv:'月均 HK$4.6M / 總計 HK$18.5M', active:582, threshold:false },
+  '電子電器 Electrical Appliances': { gmv:'-', active:0, threshold:false },
+  '家居電器 Home Appliances': { gmv:'月均 HK$38.5M / 總計 HK$153.6M', active:343, threshold:true },
+  '大腦場 Gadgets & Electronics': { gmv:'月均 HK$20.8M / 總計 HK$83.1M', active:392, threshold:false },
+  '運動旅行 Sports & Travel': { gmv:'月均 HK$10.6M / 總計 HK$42.5M', active:362, threshold:true },
+  '吃喝玩樂電子券 Dining & Lifestyle': { gmv:'月均 HK$640K / 總計 HK$1.9M', active:9, threshold:false },
+};
+
 function loadCommissionData() {
   if (commissionLoaded) return;
   fetch('commission_data.json')
@@ -1112,6 +1131,11 @@ function renderCommission() {
 
   container.innerHTML = sortedMains.map(main => {
     const isExpanded = expandedCats.has(main.name);
+
+    // Get GMV info if available
+    const gmvInfo = GMV_SUMMARY[main.name] || { gmv: '-', active: main.total, threshold: false };
+    const gmvHtml = state.gmvVisible && gmvInfo.gmv !== '-' ? `<div class="cat-gmv">\${gmvInfo.gmv} · \${gmvInfo.active} 碼有數據</div>` : '';
+    const thresholdBadge = gmvInfo.threshold ? '<span style="background:#FFF3E0;color:#E47D21;font-size:0.65rem;padding:1px 6px;border-radius:4px;margin-left:0.3rem">含門檻優惠</span>' : '';
     const stdRate = main.stdRates.size > 0 ? Array.from(main.stdRates).join('/') + '%' : '-';
     const merchRate = main.merchRates.size > 0 ? Array.from(main.merchRates).join('/') + '%' : '-';
 
@@ -1149,6 +1173,7 @@ function renderCommission() {
               <div class="cat-name">${main.name}</div>
               <div class="cat-count">${main.total} 個分類碼 · ${subCats.length} 個子分類</div>
               <div class="cat-rate">集運 ${stdRate} · 自送 ${merchRate}</div>
+              ${gmvHtml}
             </div>
             <div style="font-size:1.2rem;color:var(--primary)">${isExpanded ? '▼' : '▶'}</div>
           </div>
