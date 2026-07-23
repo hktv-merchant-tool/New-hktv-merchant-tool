@@ -1497,15 +1497,16 @@ async function generatePPT() {
       inventory:   { zh: '擔心庫存風險', sol: 'GREEN LAB臨期百貨計劃，3PL靈活存貨管理，代售模式先售後買降低風險' },
       brand:       { zh: '希望提升品牌知名度', sol: '每年過億廣告投放，TVB黃金時段，58個MTR站，23列全車身，260萬+買家' },
       young:       { zh: '希望拓展年輕客群', sol: '精準CRM定位，25-40歲核心消費群，每季度4.7x購買頻率的忠實客戶' },
-      exposure:    { zh: '希望增加線上曝光', sol: '關鍵字廣告、橫幅廣告、首頁推廣位，SEO及站內搜尋排名優化' }
+      exposure:    { zh: '希望增加線上曝光', sol: '關鍵字廣告、橫幅廣告，首頁推廣位，SEO及站內搜尋排名優化' }
     };
 
-    // ─── 第1頁: 封面 ───
+    // ─── 第1頁: 封面（紅色背景+商戶名稱）───
     let slide = pptx.addSlide();
-    slide.addText('No.1', { x: 0.5, y: 1.5, w: 9, h: 0.9, fontSize: 56, bold: true, color: C.primary, align: 'center' });
-    slide.addText('香港網上購物平台', { x: 0.5, y: 2.4, w: 9, h: 0.8, fontSize: 40, bold: true, color: C.dark, align: 'center' });
-    slide.addText('商戶合作方案', { x: 0.5, y: 3.3, w: 9, h: 0.7, fontSize: 36, color: C.dark, align: 'center' });
-    if (merchantName) slide.addText(merchantName + ' 專屬方案', { x: 0.5, y: 4.5, w: 9, h: 0.6, fontSize: 24, bold: true, color: C.primary, align: 'center' });
+    slide.background = { color: C.primary };
+    slide.addText('No.1', { x: 0.5, y: 1.5, w: 9, h: 0.9, fontSize: 56, bold: true, color: C.white, align: 'center' });
+    slide.addText('香港網上購物平台', { x: 0.5, y: 2.4, w: 9, h: 0.8, fontSize: 40, bold: true, color: C.white, align: 'center' });
+    slide.addText('商戶合作方案', { x: 0.5, y: 3.3, w: 9, h: 0.7, fontSize: 36, color: C.white, align: 'center' });
+    slide.addText(merchantName + ' 專屬方案', { x: 0.5, y: 4.5, w: 9, h: 0.6, fontSize: 24, color: C.gold, bold: true, align: 'center' });
 
     // ─── 第2頁: 痛點與解決方案（根據選擇動態生成）───
     if (pains && pains.length > 0) {
@@ -1615,7 +1616,7 @@ async function generatePPT() {
     slide.addText('「查詢商家」功能', { x: 0.7, y: 1.4, w: 4, h: 0.4, fontSize: 13, bold: true, color: C.dark });
     slide.addText('透過即時對話功能提升服務效率', { x: 0.7, y: 1.75, w: 8, h: 0.4, fontSize: 11, color: C.muted });
     slide.addText('客戶群組系統', { x: 0.7, y: 2.3, w: 4, h: 0.4, fontSize: 13, bold: true, color: C.dark });
-    ['允許商家、消費者和KOL交流互動', '允許商家與目標客戶討論新事物、新話題', '一站式自助工具，用以精準劃分客戶群'].forEach((t, i) => {
+    ['允許商家、消費者和KOL交流互動', '允許商家與目標客戶討論新事物，新話題', '一站式自助工具，用以精準劃分客戶群'].forEach((t, i) => {
       slide.addText(t, { x: 0.7, y: 2.7 + i * 0.4, w: 8, h: 0.4, fontSize: 11, color: C.muted });
     });
 
@@ -1668,7 +1669,7 @@ async function generatePPT() {
     slide.addText('網站 : http://business.hktvmall.com', { x: 0.5, y: 2.8, w: 9, h: 0.5, fontSize: 18, align: 'center' });
     slide.addText('WHATSAPP : +852 5283 4138', { x: 0.5, y: 3.4, w: 9, h: 0.5, fontSize: 18, align: 'center' });
     slide.addText('https://wa.me/85252834138', { x: 0.5, y: 3.9, w: 9, h: 0.4, fontSize: 14, color: C.muted, align: 'center' });
-    if (merchantName) slide.addText('「' + merchantName + '」期待與您合作！', { x: 0.5, y: 4.6, w: 9, h: 0.5, fontSize: 20, bold: true, color: C.primary, align: 'center' });
+    slide.addText(merchantName + ' 期待與您合作！', { x: 0.5, y: 4.6, w: 9, h: 0.5, fontSize: 20, bold: true, color: C.primary, align: 'center' });
 
     // Download
     pptx.writeFile({ fileName: merchantName + '_HKTVmall_招商提案.pptx' })
@@ -1684,4 +1685,4 @@ async function generatePPT() {
 }
 
 
-</script>
+
