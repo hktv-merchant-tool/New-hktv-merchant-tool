@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HKTVmall 招商開發工具 | B2B Cold Outreach Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 :root {
   --primary: #106946;
@@ -348,6 +349,7 @@ textarea { resize: vertical; line-height: 1.6; }
     <button class="nav-tab" onclick="showPage('commission')">◈ 佣金率與數據</button>
     <button class="nav-tab" onclick="showPage('faq')">◎ FAQ 常見問題</button>
     <button class="nav-tab" onclick="showPage('penalty')">⚠ 罰款清單</button>
+    <button class="nav-tab" onclick="showPage('ppt')">🎯 生成客製化PPT</button>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
@@ -640,6 +642,144 @@ textarea { resize: vertical; line-height: 1.6; }
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 6: CUSTOM PPT -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="page-ppt" class="page">
+    <div class="card">
+      <h1 style="font-size:1.3rem;margin-bottom:0.5rem">🎯 生成客製化PPT</h1>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1.5rem">輸入商戶資料，一鍵生成專業招商PPT，適用於商務會議及郵寄提案</p>
+
+      <!-- Mode Selection -->
+      <div class="form-group">
+        <div class="section-title">生成模式</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-pptmode="builtin" onclick="setPPTMade('builtin')">📊 內置模板（推薦）</button>
+          <button class="toggle-btn" data-pptmode="upload" onclick="setPPTMade('upload')">📤 上傳自訂PPT</button>
+        </div>
+      </div>
+
+      <!-- Merchant Info -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group">
+          <label class="field-label">商戶名稱 / 品牌名稱 *</label>
+          <input type="text" id="ppt-merchant-name" placeholder="例如：ABC 電器有限公司" oninput="validatePPTForm()">
+        </div>
+        <div class="form-group">
+          <label class="field-label">主要業務描述</label>
+          <input type="text" id="ppt-business-desc" placeholder="例如：電子產品零售、餐飲服務...">
+        </div>
+      </div>
+
+      <!-- Pain Points -->
+      <div class="form-group">
+        <label class="field-label">痛點標籤（可多選）</label>
+        <div class="cat-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+          <div class="plan-item" data-pain="logistics" onclick="togglePain(this)">
+            <input type="checkbox" name="pain" value="logistics">
+            <div class="plan-check"></div>
+            <div style="font-size:0.78rem">📦 物流成本高</div>
+          </div>
+          <div class="plan-item" data-pain="fee" onclick="togglePain(this)">
+            <input type="checkbox" name="pain" value="fee">
+            <div class="plan-check"></div>
+            <div style="font-size:0.78rem">💰 平台費用不透明</div>
+          </div>
+          <div class="plan-item" data-pain="experience" onclick="togglePain(this)">
+            <input type="checkbox" name="pain" value="experience">
+            <div class="plan-check"></div>
+            <div style="font-size:0.78rem">📱 缺乏電商經驗</div>
+          </div>
+          <div class="plan-item" data-pain="inventory" onclick="togglePain(this)">
+            <input type="checkbox" name="pain" value="inventory">
+            <div class="plan-check"></div>
+            <div style="font-size:0.78rem">📋 擔心庫存風險</div>
+          </div>
+          <div class="plan-item" data-pain="brand" onclick="togglePain(this)">
+            <input type="checkbox" name="pain" value="brand">
+            <div class="plan-check"></div>
+            <div style="font-size:0.78rem">🏆 希望提升品牌知名度</div>
+          </div>
+          <div class="plan-item" data-pain="young" onclick="togglePain(this)">
+            <input type="checkbox" name="pain" value="young">
+            <div class="plan-check"></div>
+            <div style="font-size:0.78rem">👥 希望拓展年輕客群</div>
+          </div>
+          <div class="plan-item" data-pain="exposure" onclick="togglePain(this)">
+            <input type="checkbox" name="pain" value="exposure">
+            <div class="plan-check"></div>
+            <div style="font-size:0.78rem">🔍 希望增加線上曝光</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plan Selection -->
+      <div class="form-group">
+        <label class="field-label">招商計劃（用於PPT內容）</label>
+        <div class="plan-grid">
+          <div class="plan-item" data-pptplan="typeA" onclick="togglePPTPlan(this)">
+            <input type="checkbox" name="pptplan" value="typeA">
+            <div class="plan-check"></div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:0.5rem">
+                <span class="plan-name">Type A Plan</span>
+                <span class="plan-tag tag-local">本地</span>
+              </div>
+              <div class="plan-desc">年費 HK$25,000 + HK$22,000 廣告金</div>
+            </div>
+          </div>
+          <div class="plan-item" data-pptplan="overseas" onclick="togglePPTPlan(this)">
+            <input type="checkbox" name="pptplan" value="overseas">
+            <div class="plan-check"></div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:0.5rem">
+                <span class="plan-name">Overseas Plan</span>
+                <span class="plan-tag tag-overseas">海外</span>
+              </div>
+              <div class="plan-desc">年費優惠 HK$3,000</div>
+            </div>
+          </div>
+          <div class="plan-item" data-pptplan="service" onclick="togglePPTPlan(this)">
+            <input type="checkbox" name="pptplan" value="service">
+            <div class="plan-check"></div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:0.5rem">
+                <span class="plan-name">Service Deal</span>
+                <span class="plan-tag tag-service">服務</span>
+              </div>
+              <div class="plan-desc">年費 HK$3,000 · e-Voucher 核銷</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Mode: File Input -->
+      <div id="ppt-upload-section" style="display:none" class="form-group">
+        <label class="field-label">上傳自訂PPT模板 (.pptx)</label>
+        <input type="file" id="ppt-upload-input" accept=".pptx" onchange="handlePPTTemplateUpload()" style="font-size:0.82rem">
+        <p style="font-size:0.72rem;color:var(--muted);margin-top:0.3rem">系統將在封面及尾頁自動加入商戶名稱及聯絡方式</p>
+      </div>
+
+      <!-- Generate Button -->
+      <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;margin-top:1rem">
+        <button class="btn btn-accent" id="ppt-generate-btn" disabled onclick="generatePPT()">
+          🎯 生成招商PPT
+        </button>
+        <div id="ppt-form-hint" style="font-size:0.78rem;color:var(--accent)">請填寫商戶名稱</div>
+        <button class="btn btn-outline" onclick="resetPPT()">重置</button>
+      </div>
+    </div>
+
+    <!-- Preview Card -->
+    <div class="card" id="ppt-preview-card" style="display:none">
+      <h2>📋 PPT 內容預覽</h2>
+      <div id="ppt-preview-content" class="preview-box" style="min-height:100px"></div>
+      <div style="margin-top:0.8rem">
+        <button class="btn btn-primary" onclick="downloadGeneratedPPT()">⬇️ 下載 PPT 檔案</button>
+      </div>
+    </div>
+  </div>
+
   <div class="footer">Made with Claude · HKTVmall B2B Tool v2.1</div>
 </div>
 
@@ -739,6 +879,13 @@ let state = {
   faqCat: 'all',
   penaltyType: 'all',
   penaltySev: 'all',
+  pptMode: 'builtin',
+  pptPains: [],
+  pptPlans: [],
+  pptMerchantName: '',
+  pptBusinessDesc: '',
+  uploadedPPTBytes: null,
+  generatedPPTX: null,
 };
 
 // ── NAVIGATION ────────────────────────────────────────────────────
@@ -1259,11 +1406,278 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// ── PPT PAGE ───────────────────────────────────────────────────────
+const PAIN_SOLUTIONS = {
+  logistics: { zh: 'HKTVmall 擁有全港最大住宅配送網絡，350+ 輛自家貨車及 75 家 O2O 門店，一條龍物流服務大幅降低商戶營運成本', en: 'HKTVmall operates Hong Kong\'s largest last-mile delivery network with 350+ fleet vehicles and 75 O2O stores, reducing merchant logistics costs significantly' },
+  fee: { zh: '費用結構清晰透明，佣金按分類碼固定比例計算，每月結算，無隱藏收費，讓商戶預算可控', en: 'Transparent fee structure with fixed commission rates by category code, monthly settlement, no hidden charges' },
+  experience: { zh: 'HKTV 電商學院提供完整培訓，包括 MMS 後台操作、產品上架、廣告投放等，另有專屬客戶關係經理一對一支援', en: 'HKTV E-Commerce Academy provides comprehensive training plus dedicated account manager support' },
+  inventory: { zh: '平台支援代售模式（先售後買），商戶可按實際訂單備貨，大幅降低積壓庫存風險', en: 'Merchant-to-order model reduces inventory risk — stock only after orders are confirmed' },
+  brand: { zh: 'HKTVmall 每年投放過億電視及戶外廣告，TVB黃金時段曝光，加上平台 260萬+ 活躍買家，為品牌帶來龐大認知度', en: 'HKTVmall invests hundreds of millions in annual advertising across TV and outdoor channels, reaching 2.6M+ active buyers' },
+  young: { zh: '平台用戶平均年齡較傳統零售更年輕，配合精準 CRM 廣告投放，有效接觸 25-40 歲核心消費群', en: 'Platform skews younger with a core demographic of 25-40 year-olds; precise CRM targeting reaches the right audience' },
+  exposure: { zh: '支援關鍵字廣告、橫幅廣告、首頁推廣位，配合 SEO 及站內搜尋排名優化，全方位提升產品曝光率', en: 'Keyword ads, banner ads, homepage placements, and SEO optimization maximize product visibility' },
+};
+
+function setPPTMade(mode) {
+  state.pptMode = mode;
+  document.querySelectorAll('[data-pptmode]').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-pptmode="'+mode+'"]').classList.add('active');
+  document.getElementById('ppt-upload-section').style.display = mode === 'upload' ? 'block' : 'none';
+}
+
+function togglePain(el) {
+  el.classList.toggle('selected');
+  const cb = el.querySelector('input[type="checkbox"]');
+  if (cb) cb.checked = el.classList.contains('selected');
+  state.pptPains = Array.from(document.querySelectorAll('.plan-item.selected[data-pain]')).map(c => c.dataset.pain);
+}
+
+function togglePPTPlan(el) {
+  el.classList.toggle('selected');
+  const cb = el.querySelector('input[type="checkbox"]');
+  if (cb) cb.checked = el.classList.contains('selected');
+  state.pptPlans = Array.from(document.querySelectorAll('.plan-item.selected[data-pptplan]')).map(c => c.dataset.pptplan);
+}
+
+function validatePPTForm() {
+  const name = document.getElementById('ppt-merchant-name').value.trim();
+  const btn = document.getElementById('ppt-generate-btn');
+  const hint = document.getElementById('ppt-form-hint');
+  if (!name) {
+    btn.disabled = true;
+    hint.textContent = '請填寫商戶名稱';
+  } else {
+    btn.disabled = false;
+    hint.textContent = '';
+  }
+}
+
+function handlePPTTemplateUpload() {
+  const fileInput = document.getElementById('ppt-upload-input');
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    state.uploadedPPTBytes = e.target.result;
+    toast('已載入 PPT 模板：' + file.name);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function resetPPT() {
+  document.getElementById('ppt-merchant-name').value = '';
+  document.getElementById('ppt-business-desc').value = '';
+  document.querySelectorAll('[data-pain].selected').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('[data-pain] input').forEach(c => c.checked = false);
+  document.querySelectorAll('[data-pptplan].selected').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('[data-pptplan] input').forEach(c => c.checked = false);
+  document.getElementById('ppt-upload-input').value = '';
+  document.getElementById('ppt-preview-card').style.display = 'none';
+  state.pptPains = [];
+  state.pptPlans = [];
+  state.uploadedPPTBytes = null;
+  state.generatedPPTX = null;
+  validatePPTForm();
+  toast('已重置');
+}
+
+function generatePPT() {
+  const merchantName = document.getElementById('ppt-merchant-name').value.trim();
+  const businessDesc = document.getElementById('ppt-business-desc').value.trim() || '相關業務';
+  const pains = state.pptPains;
+  const plans = state.pptPlans;
+  const mode = state.pptMode;
+
+  if (mode === 'upload' && !state.uploadedPPTBytes) {
+    toast('請先上傳 PPT 模板');
+    return;
+  }
+
+  if (plans.length === 0) {
+    toast('請選擇至少一個招商計劃');
+    return;
+  }
+
+  // Show preview card
+  const previewCard = document.getElementById('ppt-preview-card');
+  const previewContent = document.getElementById('ppt-preview-content');
+  previewCard.style.display = 'block';
+
+  // Build preview text
+  let previewText = '📊 將生成的 PPT 內容：\n\n';
+  previewText += 'Slide 1：封面 — ' + merchantName + ' × HKTVmall\n';
+  previewText += 'Slide 2：關於 HKTVmall — 香港 No.1 電商平台\n';
+  previewText += 'Slide 3：為什麼選擇 HKTVmall — 物流 × 營銷 × 數據\n';
+  previewText += 'Slide 4：招商計劃 — ' + plans.map(p => p === 'typeA' ? 'Type A Plan' : p === 'overseas' ? 'Overseas Plan' : 'Service Deal').join('、') + '\n';
+  if (pains.length > 0) {
+    previewText += 'Slide 5：痛點與解決方案 — ' + pains.map(p => p === 'logistics' ? '物流成本高' : p === 'fee' ? '平台費用不透明' : p === 'experience' ? '缺乏電商經驗' : p === 'inventory' ? '擔心庫存風險' : p === 'brand' ? '提升品牌知名度' : p === 'young' ? '拓展年輕客群' : '增加線上曝光').join('、') + '\n';
+  }
+  previewText += 'Slide 6：聯絡我們\n';
+  previewContent.innerHTML = previewText.replace(/\n/g, '<br>');
+
+  // Generate the PPTX
+  try {
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_16x9';
+    pptx.title = merchantName + ' — HKTVmall 招商提案';
+    pptx.author = 'HKTVmall Business Development';
+
+    // Colors
+    const GREEN = '106946';
+    const GREEN_DARK = '0D5238';
+    const ORANGE = 'E47D21';
+    const WHITE = 'FFFFFF';
+
+    // ── Slide 1: Cover ──────────────────────────────────────────
+    let slide1 = pptx.addSlide();
+    slide1.background = { color: GREEN };
+    slide1.addText(merchantName, { x: 0.5, y: 1.8, w: 9, h: 0.9, fontSize: 40, bold: true, color: WHITE, align: 'center' });
+    slide1.addText('×', { x: 0.5, y: 2.7, w: 9, h: 0.6, fontSize: 28, color: ORANGE, align: 'center' });
+    slide1.addText('HKTVmall', { x: 0.5, y: 3.2, w: 9, h: 0.8, fontSize: 44, bold: true, color: WHITE, align: 'center' });
+    slide1.addText('招商合作提案  |  Business Partnership Proposal', { x: 0.5, y: 4.1, w: 9, h: 0.5, fontSize: 16, color: 'D4E8DF', align: 'center' });
+    slide1.addShape(pptx.ShapeType.rect, { x: 3.5, y: 4.8, w: 3, h: 0.05, fill: { color: ORANGE } });
+    slide1.addText('香港 No.1 一站式電商平台  |  260萬+ 活躍買家', { x: 0.5, y: 5.0, w: 9, h: 0.4, fontSize: 12, color: 'D4E8DF', align: 'center' });
+
+    // ── Slide 2: About HKTVmall ────────────────────────────────
+    let slide2 = pptx.addSlide();
+    slide2.background = { color: WHITE };
+    slide2.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 10, h: 0.9, fill: { color: GREEN } });
+    slide2.addText('關於 HKTVmall', { x: 0.5, y: 0.15, w: 9, h: 0.6, fontSize: 24, bold: true, color: WHITE, margin: 0 });
+    slide2.addText('香港 No.1 一站式電商平台', { x: 0.5, y: 1.1, w: 9, h: 0.5, fontSize: 18, bold: true, color: GREEN_DARK, align: 'center' });
+
+    const stats = [
+      { val: '260萬+', label: '活躍買家' },
+      { val: '~HK$7億', label: '每月銷售額' },
+      { val: '2,000萬+', label: '每月頁面瀏覽量' },
+    ];
+    stats.forEach((s, i) => {
+      const x = 0.8 + i * 3;
+      slide2.addShape(pptx.ShapeType.rect, { x: x, y: 1.7, w: 2.6, h: 1.4, fill: { color: 'F4F7F4' }, line: { color: GREEN, width: 1.5 } });
+      slide2.addText(s.val, { x: x, y: 1.8, w: 2.6, h: 0.7, fontSize: 22, bold: true, color: GREEN, align: 'center' });
+      slide2.addText(s.label, { x: x, y: 2.5, w: 2.6, h: 0.4, fontSize: 12, color: '6C757D', align: 'center' });
+    });
+
+    slide2.addText('物流網絡覆蓋全港', { x: 0.5, y: 3.3, w: 9, h: 0.4, fontSize: 14, bold: true, color: GREEN_DARK, align: 'center' });
+    const logistics = [
+      '350+ 輛自家貨車', '75 家 O2O 門店', '五大地區七大倉庫', '支援常溫、冷凍及急凍儲運'
+    ];
+    slide2.addText(logistics.join('  |  '), { x: 0.5, y: 3.7, w: 9, h: 0.4, fontSize: 12, color: '6C757D', align: 'center' });
+    slide2.addText('行銷與推廣支援', { x: 0.5, y: 4.2, w: 9, h: 0.4, fontSize: 14, bold: true, color: GREEN_DARK, align: 'center' });
+    slide2.addText('TVC 電視廣告 × 3,000+ 廣告燈箱 × 每年過億重磅投放  |  單日銷售額曾突破 HK$4,000萬', { x: 0.5, y: 4.6, w: 9, h: 0.4, fontSize: 12, color: '6C757D', align: 'center' });
+    slide2.addText(businessDesc, { x: 0.5, y: 5.1, w: 9, h: 0.35, fontSize: 11, color: ORANGE, align: 'center', italic: true });
+
+    // ── Slide 3: Why HKTVmall ──────────────────────────────────
+    let slide3 = pptx.addSlide();
+    slide3.background = { color: WHITE };
+    slide3.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 10, h: 0.9, fill: { color: GREEN } });
+    slide3.addText('為什麼選擇 HKTVmall', { x: 0.5, y: 0.15, w: 9, h: 0.6, fontSize: 24, bold: true, color: WHITE, margin: 0 });
+
+    const reasons = [
+      { icon: '🚚', title: '智能物流', desc: '全港最大住宅配送網絡，自動化訂單處理，每日可處理 10萬+ 訂單，3PL 一條龍服務' },
+      { icon: '📣', title: '強勢營銷', desc: 'TVC + 戶外廣告 + 精準 CRM，每年過億投放，支援 50+ 種廣告模板' },
+      { icon: '📊', title: '數據洞察', desc: '商戶數據分析平台實時監控銷售數據，協助優化定價及庫存策略' },
+      { icon: '🎓', title: '培訓支援', desc: 'HKTV 電商學院提供專業培訓課程，另有專屬客戶關係經理一對一支援' },
+    ];
+    reasons.forEach((r, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      const x = 0.5 + col * 4.7;
+      const y = 1.1 + row * 2.1;
+      slide3.addShape(pptx.ShapeType.rect, { x: x, y: y, w: 4.3, h: 1.8, fill: { color: 'F4F7F4' }, line: { color: 'D4E8DF', width: 1 } });
+      slide3.addText(r.icon + '  ' + r.title, { x: x + 0.2, y: y + 0.15, w: 3.9, h: 0.5, fontSize: 14, bold: true, color: GREEN_DARK });
+      slide3.addText(r.desc, { x: x + 0.2, y: y + 0.65, w: 3.9, h: 1.0, fontSize: 11, color: '6C757D', valign: 'top' });
+    });
+
+    // ── Slide 4: Plans ────────────────────────────────────────
+    let slide4 = pptx.addSlide();
+    slide4.background = { color: WHITE };
+    slide4.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 10, h: 0.9, fill: { color: GREEN } });
+    slide4.addText('招商計劃介紹', { x: 0.5, y: 0.15, w: 9, h: 0.6, fontSize: 24, bold: true, color: WHITE, margin: 0 });
+
+    const planInfo = {
+      typeA: { name: 'Type A 本地商戶計劃', tag: '本地', tagColor: 'E8F5EE', tagText: '106946', fee: 'HK$25,000 年費 + HK$22,000 廣告金（淨付 HK$3,000）', benefits: ['七大倉儲網絡', '自動化物流（10萬+訂單/日）', '每月結算服務', '直播頻道 Live Show', 'Zoom Sales 真人線上售貨員', 'ChicChat 群組聊天', '商戶數據分析平台', 'HKTV 電商學院培訓'], renewal: '月均 GMV HK$15,000 以上，續約費 HK$5,000；以下豁免' },
+      overseas: { name: 'Overseas Plan 海外跨境商戶計劃', tag: '海外', tagColor: 'FFF3E0', tagText: 'E47D21', fee: 'HK$3,000 年費（原價 HK$25,000）', benefits: ['跨境物流支援', '簡化合規流程', '全球供應商入駐'], renewal: '標準續約條款' },
+      service: { name: 'Service Deal 服務類商戶計劃', tag: '服務', tagColor: 'E3F2FD', tagText: '1565C0', fee: 'HK$3,000 年費', benefits: ['e-Voucher 核銷支援', '適合體驗服務及教育培訓', '靈活服務上架'], renewal: '標準續約條款' },
+    };
+
+    plans.forEach((planKey, i) => {
+      const info = planInfo[planKey];
+      if (!info) return;
+      const y = 1.1 + i * 1.45;
+      slide4.addShape(pptx.ShapeType.rect, { x: 0.5, y: y, w: 9, h: 1.3, fill: { color: 'F4F7F4' }, line: { color: GREEN, width: 1 } });
+      slide4.addText(info.name, { x: 0.7, y: y + 0.1, w: 6, h: 0.4, fontSize: 13, bold: true, color: GREEN_DARK });
+      slide4.addText(info.tag, { x: 7.5, y: y + 0.1, w: 1.8, h: 0.35, fontSize: 10, bold: true, color: info.tagText, fill: { color: info.tagColor }, align: 'center' });
+      slide4.addText(info.fee, { x: 0.7, y: y + 0.5, w: 8.5, h: 0.3, fontSize: 10, color: ORANGE, bold: true });
+      slide4.addText(info.benefits.slice(0, 4).join('  ·  '), { x: 0.7, y: y + 0.8, w: 8.5, h: 0.3, fontSize: 9, color: '6C757D' });
+    });
+
+    // ── Slide 5: Pain Points ───────────────────────────────────
+    if (pains.length > 0) {
+      let slide5 = pptx.addSlide();
+      slide5.background = { color: WHITE };
+      slide5.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 10, h: 0.9, fill: { color: ORANGE } });
+      slide5.addText('痛點與解決方案', { x: 0.5, y: 0.15, w: 9, h: 0.6, fontSize: 24, bold: true, color: WHITE, margin: 0 });
+      slide5.addText(merchantName + '  —  我們的理解與對應方案', { x: 0.5, y: 1.0, w: 9, h: 0.4, fontSize: 12, color: '6C757D', align: 'center' });
+
+      const painLabels = {
+        logistics: '📦 物流成本高', fee: '💰 平台費用不透明', experience: '📱 缺乏電商經驗',
+        inventory: '📋 擔心庫存風險', brand: '🏆 提升品牌知名度', young: '👥 拓展年輕客群', exposure: '🔍 增加線上曝光'
+      };
+
+      pains.forEach((pain, i) => {
+        const y = 1.5 + i * 1.0;
+        slide5.addShape(pptx.ShapeType.rect, { x: 0.5, y: y, w: 9, h: 0.85, fill: { color: 'FEF9E7' }, line: { color: 'F1C40F', width: 0.5 } });
+        slide5.addText(painLabels[pain] || pain, { x: 0.7, y: y + 0.08, w: 2.5, h: 0.35, fontSize: 11, bold: true, color: GREEN_DARK });
+        slide5.addText(PAIN_SOLUTIONS[pain]?.zh || '', { x: 0.7, y: y + 0.4, w: 8.5, h: 0.4, fontSize: 10, color: '6C757D', valign: 'top' });
+      });
+    }
+
+    // ── Slide 6: CTA ───────────────────────────────────────────
+    let slide6 = pptx.addSlide();
+    slide6.background = { color: GREEN };
+    slide6.addText('立即聯絡我們', { x: 0.5, y: 1.5, w: 9, h: 0.8, fontSize: 36, bold: true, color: WHITE, align: 'center' });
+    slide6.addText('期待與 ' + merchantName + ' 建立長期合作關係', { x: 0.5, y: 2.4, w: 9, h: 0.5, fontSize: 16, color: 'D4E8DF', align: 'center' });
+    slide6.addShape(pptx.ShapeType.rect, { x: 3.5, y: 3.0, w: 3, h: 0.05, fill: { color: ORANGE } });
+    slide6.addText('商務電郵  aog.merc@hktv.com.hk', { x: 0.5, y: 3.2, w: 9, h: 0.5, fontSize: 14, color: WHITE, align: 'center' });
+    slide6.addText('HKTVmall 招商團隊  |  Merchant Partnership Team', { x: 0.5, y: 3.7, w: 9, h: 0.4, fontSize: 12, color: 'D4E8DF', align: 'center' });
+    slide6.addText('business.hktvmall.com', { x: 0.5, y: 4.2, w: 9, h: 0.4, fontSize: 12, color: ORANGE, align: 'center' });
+    slide6.addText('申請開店：mms.shoalter.com', { x: 0.5, y: 4.6, w: 9, h: 0.4, fontSize: 11, color: 'D4E8DF', align: 'center' });
+
+    // Save
+    pptx.writeFile({ fileName: merchantName + '_HKTVmall_招商提案.pptx' })
+      .then(data => {
+        state.generatedPPTX = data;
+        toast('PPT 生成成功！');
+      })
+      .catch(err => {
+        toast('PPT 生成失敗：' + err);
+      });
+
+  } catch (err) {
+    toast('PPT 生成失敗：' + err);
+  }
+}
+
+function downloadGeneratedPPT() {
+  if (!state.generatedPPTX) {
+    toast('請先生成 PPT');
+    return;
+  }
+  const blob = new Blob([state.generatedPPTX], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const name = document.getElementById('ppt-merchant-name').value.trim() || 'HKTVmall';
+  a.download = name + '_HKTVmall_招商提案.pptx';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // ── INIT ───────────────────────────────────────────────────────────
 renderCommission();
 renderFAQ();
 renderPenalties();
 validateForm();
+validatePPTForm();
 </script>
 </body>
 </html>
