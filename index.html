@@ -1468,11 +1468,88 @@ function downloadPythonGeneratedPPT() {
 // ── PPT Generator (Browser-side using pptxgenjs) ──
 // 完整模板結構（跟足 2026 HKTVmall New Merchant Acquisition Deck [CHI] 49頁）
 
-// ── PPT Generator (使用 pptxgenjs) ────────────────────────────────
+// ── PPT Generator (使用本地 PPTX 模板) ────────────────────────────
 
-function generatePPT() {
+async function generatePPT() {
   const merchantName = document.getElementById('ppt-merchant-name').value.trim();
   const businessDesc = document.getElementById('ppt-business-desc').value.trim() || '';
+  const pains = state.pptPains;
+  const plans = state.pptPlans;
+
+  if (!merchantName) { toast('請填寫商戶名稱'); return; }
+  if (plans.length === 0) { toast('請選擇至少一個招商計劃'); return; }
+
+  const btn = document.getElementById('ppt-generate-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ 生成中...';
+
+  try {
+    // 載入本地 PPTX 模板
+    const response = await fetch('template.pptx');
+    if (!response.ok) throw new Error('無法下載PPT模板');
+    const arrayBuffer = await response.arrayBuffer();
+
+    // 用 JSZip 解壓 PPTX
+    const zip = await JSZip.loadAsync(arrayBuffer);
+
+    // 取得所有幻燈片
+    const slideFiles = Object.keys(zip.files)
+      .filter(name => /^ppt\/slides\/slide\d+\.xml$/.test(name))
+      .sort();
+
+    // 痛點地圖
+    const painMap = {
+      logistics:   { zh: '物流成本高', sol: '全港最大住宅配送網絡，350+輛貨車，500+取貨點，大幅降低物流成本' },
+      fee:         { zh: '平台費用不透明', sol: '佣金按分類碼固定比例計算，每月15個工作日結算，無隱藏收費' },
+      experience:  { zh: '缺乏電商經驗', sol: '電商學院提供完整培訓，MMS後台操作、產品上架、廣告投放一對一支援' },
+      inventory:   { zh: '擔心庫存風險', sol: 'GREEN LAB臨期百貨計劃，3PL靈活存貨管理，代售模式先售後買降低風險' },
+      brand:       { zh: '希望提升品牌知名度', sol: '每年過億廣告投放，TVB黃金時段，58個MTR站，23列全車身，260萬+買家' },
+      young:       { zh: '希望拓展年輕客群', sol: '精準CRM定位，25-40歲核心消費群，每季度4.7x購買頻率的忠實客戶' },
+      exposure:    { zh: '希望增加線上曝光', sol: '關鍵字廣告、橫幅廣告、首頁推廣位，SEO及站內搜尋排名優化' }
+    };
+
+    // 置換文字函數
+    const replaceText = (xml, oldText, newText) => {
+      return xml.replace(new RegExp(oldText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), newText);
+    };
+
+    // 修改每張幻燈片
+    for (const slidePath of slideFiles) {
+      let slideXml = await zip.file(slidePath).async('string');
+
+      // Slide 1: 封面 - 置換 "No.1" 為商戶名稱
+      if (slidePath === 'ppt/slides/slide1.xml') {
+        slideXml = replaceText(slideXml, 'No.1', merchantName);
+      }
+
+      // 更新 zip 中的文件
+      zip.file(slidePath, slideXml);
+    }
+
+    // 生成新的 PPTX
+    const newPPTX = await zip.generateAsync({
+      type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    });
+
+    // 下載
+    const url = URL.createObjectURL(newPPTX);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = merchantName + '_HKTVmall_招商提案.pptx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast('✅ PPT 生成成功！共 ' + slideFiles.length + ' 頁，已下載。');
+  } catch (err) {
+    console.error(err);
+    toast('❌ 生成失敗：' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🎯 生成招商PPT';
+  }
   const pains = state.pptPains;
   const plans = state.pptPlans;
 
