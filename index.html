@@ -1509,8 +1509,7 @@ function generatePPT() {
     slide = pptx.addSlide();
     slide.addText('No.1', { x: 0.5, y: 0.4, w: 9, h: 0.8, fontSize: 56, bold: true, color: C.primary, align: 'center' });
     slide.addText('香港網上購物平台', { x: 0.5, y: 1.2, w: 9, h: 0.8, fontSize: 40, bold: true, color: C.dark, align: 'center' });
-    slide.addText('24小時網上購物  ·  物流 & O2O 門市  ·  營銷與廣告
-平台大數據分析  ·  發展海外市場  ·  商客互聯平台與直播頻道', { x: 0.5, y: 2.4, w: 9, h: 1.5, fontSize: 18, color: C.dark, align: 'center' });
+    slide.addText('\1\n\2', { x: 0.5, y: 2.4, w: 9, h: 1.5, fontSize: 18, color: C.dark, align: 'center' });
 
     // ─── PAGE 3: HKTVmall 的里程碑 ───
     slide = pptx.addSlide();
@@ -1631,8 +1630,7 @@ function generatePPT() {
     slide.addText('大型優惠推廣活動', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 28, bold: true, color: C.dark });
     slide.addText('4,000萬', { x: 0.5, y: 1.0, w: 9, h: 1.1, fontSize: 60, bold: true, color: C.primary, align: 'center' });
     slide.addText('單日銷售額突破', { x: 0.5, y: 2.1, w: 9, h: 0.5, fontSize: 20, color: C.dark, align: 'center' });
-    slide.addText('HKTVmall全額承擔85折
-媒體新聞報導  投放TVB電視廣告', { x: 0.5, y: 2.8, w: 9, h: 0.8, fontSize: 15, color: C.muted, align: 'center' });
+    slide.addText('\1\n\2', { x: 0.5, y: 2.8, w: 9, h: 0.8, fontSize: 15, color: C.muted, align: 'center' });
 
     // ─── PAGE 20: 大型優惠推廣活動 (TVC) ───
     slide = pptx.addSlide();
@@ -1807,8 +1805,7 @@ function generatePPT() {
     slide.addText('本月完成的訂單', { x: 2.7, y: 1.1, w: 6, h: 0.45, fontSize: 16, color: C.dark });
     slide.addText('在15個工作日內', { x: 0.7, y: 1.7, w: 3, h: 0.45, fontSize: 18, bold: true, color: C.primary });
     slide.addText('款項轉至商戶的銀行帳戶', { x: 3.7, y: 1.7, w: 5, h: 0.45, fontSize: 16, color: C.dark });
-    slide.addText('*不包括星期六、日及公眾假期
-*對於非本地銀行，如果支付總額不足1,000港元，將累積達到1,000港元時一次性支付', { x: 0.7, y: 2.5, w: 8, h: 0.9, fontSize: 12, color: C.muted });
+    slide.addText('\1\n\2', { x: 0.7, y: 2.5, w: 8, h: 0.9, fontSize: 12, color: C.muted });
 
     // ─── PAGE 42: 商戶管理平台 ───
     slide = pptx.addSlide();
@@ -1832,15 +1829,7 @@ function generatePPT() {
     slide = pptx.addSlide();
     slide.addText('集運計劃的營運模式', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
     slide.addText('HKTVmall', { x: 0.5, y: 0.9, w: 9, h: 0.4, fontSize: 16, color: C.primary, bold: true });
-    const p44s = ['客戶落單購物', '訂單包裝', '訂單送至
-HKTVmall倉庫', '最後一哩
-運送'];
-    const p44sub = ['登入商家後台
-系統查看訂單詳情', '商家收到訂單
-後進行包裝', '當天送達倉庫
-(HKTVmall次日
-進行配送)', '自有物流團隊
-或快遞'];
+    const p44s = ['客戶落單購物', '訂單包裝', '訂單送至\nHKTVmall倉庫', '最後一哩\n運送'];
     p44s.forEach((s, i) => {
       slide.addText(s, { x: 0.45 + i * 2.35, y: 1.4, w: 2.2, h: 0.75, fontSize: 13, color: C.dark, align: 'center', bold: true });
       slide.addText('↓', { x: 0.45 + i * 2.35, y: 2.1, w: 2.2, h: 0.35, fontSize: 16, color: C.primary, align: 'center' });
