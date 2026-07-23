@@ -1830,6 +1830,7 @@ function generatePPT() {
     slide.addText('集運計劃的營運模式', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
     slide.addText('HKTVmall', { x: 0.5, y: 0.9, w: 9, h: 0.4, fontSize: 16, color: C.primary, bold: true });
     const p44s = ['客戶落單購物', '訂單包裝', '訂單送至\nHKTVmall倉庫', '最後一哩\n運送'];
+    const p44sub = ['登入商家後台\n系統查看訂單詳情', '商家收到訂單\n後進行包裝', '當天送達倉庫\n(HKTVmall次日\n進行配送)', '自有物流團隊\n或快遞'];
     p44s.forEach((s, i) => {
       slide.addText(s, { x: 0.45 + i * 2.35, y: 1.4, w: 2.2, h: 0.75, fontSize: 13, color: C.dark, align: 'center', bold: true });
       slide.addText('↓', { x: 0.45 + i * 2.35, y: 2.1, w: 2.2, h: 0.35, fontSize: 16, color: C.primary, align: 'center' });
