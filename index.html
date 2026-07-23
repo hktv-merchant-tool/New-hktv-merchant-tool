@@ -767,16 +767,6 @@ textarea { resize: vertical; line-height: 1.6; }
         <div style="font-size:0.7rem;color:var(--muted);margin-top:0.5rem">
           💡 使用 Python 生成器需要本地部署 python-pptx，詳見 <code>hktv_ppt_generator.py</code>
         </div>
-
-        <div style="margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--border)">
-          <div style="font-size:0.78rem;color:var(--accent);margin-bottom:0.5rem">✨ 精美設計 PPT（需部署 API）</div>
-          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem">
-            下載精美版 Flask API 服務器，部署後可生成 HKTV 紅色主題精美 PPT
-          </div>
-          <button class="btn btn-outline" onclick="downloadFlaskServer()">
-            🖥️ Flask API 服務器（下載後部署）
-          </button>
-        </div>
       </div>
     </div>
 
@@ -1472,17 +1462,6 @@ function downloadPythonGeneratedPPT() {
   link.click();
   document.body.removeChild(link);
   toast('✅ 已下載 Python PPT 生成器！\n運行: python3 hktv_ppt_generator.py --help');
-}
-
-function downloadFlaskServer() {
-  // Trigger download of the Flask API server script
-  const link = document.createElement('a');
-  link.href = 'ppt_server.py';
-  link.download = 'ppt_server.py';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  toast('✅ 已下載 Flask API 服務器！\n\n部署方法：\n1. pip3 install flask python-pptx\n2. python3 ppt_server.py --host 0.0.0.0 --port 5000\n3. 在「精美版 PPT」輸入 API 地址生成');
 }
 
 // ── PPT Generator (Browser-side using pptxgenjs) ──
