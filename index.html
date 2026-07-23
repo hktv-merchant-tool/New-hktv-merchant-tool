@@ -801,54 +801,129 @@ function validateForm() {
 // ── TEXT GENERATION ───────────────────────────────────────────────
 function generateText() {
   const name = document.getElementById('merchant-name').value.trim();
-  const desc = document.getElementById('business-desc').value.trim();
+  const desc = document.getElementById('business-desc').value.trim() || '相關業務';
   const plans = state.plans;
   const lang = state.lang;
-  const channel = state.channel;
 
-  const planNames = {
-    typeA: { zh:'Type A Plan（本地常規商戶）', en:'Type A Plan (Local Standard Merchant)' },
-    overseas: { zh:'Overseas Plan（海外跨境商戶）', en:'Overseas Plan (Cross-border Merchant)' },
-    service: { zh:'Service Deal（服務類商戶）', en:'Service Deal (Service Merchant)' },
+  const platformInfo = {
+    stats: '香港 No.1 一站式電商平台，每月銷售額逾 ~HK$7億，擁有 260萬+ 活躍買家，每月頁面瀏覽量超過 2,000萬次',
+    logistics: '平台配備 350+ 輛自家貨車及 75 家 O2O 門店，覆蓋全港最大住宅配送網絡，並設有五大地區七大倉庫，支援常溫、冷凍及急凍儲運',
+    marketing: '平台提供超過 50 種客製化廣告模板，包括關鍵字廣告、橫幅廣告、開頁廣告及精準 CRM 客戶群組定位。HKTVmall 每年投放過億重磅廣告，包括 TVB 電視廣告及 3,000+ 廣告燈箱，並定期舉辦大型優惠推廣活動，單日銷售額曾突破 HK$4,000萬，折扣成本由平台全額承擔',
+  };
+
+  const planDetails = {
+    typeA: {
+      zh: {
+        name: 'Type A 本地商戶計劃',
+        fee: '年費 HK$25,000，附送 HK$22,000 廣告金（實際淨付僅 HK$3,000），最快 3-5 個工作天即可完成開店',
+        benefits: '商戶可享用七大倉儲網絡、自動化物流（每日可處理 10萬+ 訂單）及每月結算服務',
+        freeServices: '免費增值服務包括：直播頻道（Live Show 限時購物）、Zoom Sales 真人線上售貨員、ChicChat 群組聊天功能，商戶數據分析平台（Merchant Dashboard），以及 HKTV 電商學院培訓支援',
+        growth: '根據平台數據，加入 3PL 一條龍服務後，各類別平均銷售增長達 +105%（母嬰育兒）至 +156%（家居電器），成效顯著',
+        renewal: '年費續約安排靈活：月均生意額 HK$15,000 以上，續約費僅 HK$5,000；低於此門檻，續約費豁免',
+      },
+      en: {
+        name: 'Type A Local Merchant Plan',
+        fee: 'Annual fee of HK$25,000 includes HK$22,000 in advertising credits, meaning the effective net cost is just HK$3,000. Merchants can go live within 3-5 business days',
+        benefits: 'Merchants enjoy immediate access to our full logistics network, automated order management (100,000+ orders daily), and monthly payment settlement',
+        freeServices: 'Complimentary services include: Live Show (real-time shopping broadcasts), Zoom Sales (virtual sales representatives), ChicChat (merchant-customer group chat), Merchant Dashboard (sales analytics), and HKTV E-Commerce Academy training',
+        growth: 'Platform data shows merchants joining our 3PL service see average sales growth of +105% (baby & maternity) to +156% (home electronics)',
+        renewal: 'Annual renewal is flexible: just HK$5,000 if monthly GMV exceeds HK$15,000; waived entirely for lower-volume merchants',
+      }
+    },
+    overseas: {
+      zh: {
+        name: 'Overseas Plan 海外跨境商戶計劃',
+        fee: '年費優惠 HK$3,000（原價 HK$25,000），專為海外供應商設計',
+        benefits: '支援跨境物流，涵蓋全球供應商入駐，簡化合規流程',
+      },
+      en: {
+        name: 'Overseas Plan',
+        fee: 'Preferential annual fee of HK$3,000 (original HK$25,000), designed for cross-border suppliers',
+        benefits: 'Supports cross-border logistics with simplified compliance processes for global suppliers',
+      }
+    },
+    service: {
+      zh: {
+        name: 'Service Deal 服務類商戶計劃',
+        fee: '年費 HK$3,000，專為服務類商戶設計',
+        benefits: '支援 e-Voucher 核銷，適合體驗服務、教育培訓等商戶',
+      },
+      en: {
+        name: 'Service Deal',
+        fee: 'Annual fee of HK$3,000, designed for service-based merchants',
+        benefits: 'Supports e-Voucher redemption, ideal for experiential services and education providers',
+      }
+    }
   };
 
   let text = '';
-  const planList = plans.map(p => planNames[p]).filter(Boolean);
 
   if (lang === 'zh' || lang === 'bilingual') {
-    text += `Subject: HKTVmall 招商機會 — 為 ${name} 開啟電商新里程\n\n`;
-    text += `尊敬的 ${name} 團隊：\n\n`;
-    text += `您好！我是 HKTVmall 商戶關係團隊成員，得知貴司從事${desc || '相關業務'}，深感興趣。\n\n`;
-    text += `HKTVmall 作為香港領先電商平台，現正積極擴充優質商戶網絡。我們提供以下招商計劃供貴司考慮：\n\n`;
-    planList.forEach((p, i) => {
-      text += `${i+1}. ${p.zh}\n`;
+    const selectedPlans = plans.map(p => planDetails[p]?.zh).filter(Boolean);
+    const planName = selectedPlans.map(p => p.name).join('、');
+
+    text += 'Subject: 誠邀 ' + name + ' 加入 HKTVmall ' + planName + ' — 觸達 260萬+ 香港買家\n\n';
+    text += '敬啟者，\n\n';
+    text += '本人為 HKTVmall 招商團隊關係經理，近期留意到 ' + name + '，了解到貴司主要從事' + desc + '，深感貴司的產品與服務與我們平台的目標客群高度契合，特此致函，誠邀貴司考慮加入 HKTVmall 電商平台。\n\n';
+    text += 'HKTVmall 平台優勢\n';
+    text += platformInfo.stats + '。\n';
+    text += platformInfo.logistics + '。\n\n';
+    text += '行銷與推廣支援\n';
+    text += platformInfo.marketing + '。\n\n';
+
+    selectedPlans.forEach(plan => {
+      text += plan.name + '\n';
+      text += plan.fee + '。\n';
+      if (plan.benefits) text += plan.benefits + '。\n';
+      if (plan.freeServices) text += plan.freeServices + '。\n';
+      if (plan.growth) text += plan.growth + '。\n';
+      if (plan.renewal) text += plan.renewal + '。\n';
+      text += '\n';
     });
-    text += `\n如蒙垂詢，我可提供詳細計劃書及費用說明。期待與貴司展開合作！\n\n`;
-    text += `祝 商祺\nHKTVmall 商戶關係團隊\n`;
+
+    text += '如貴司有興趣進一步了解詳情，歡迎隨時與本人聯絡，安排電話或面談，為貴司度身訂造最合適的合作方案。\n\n';
+    text += '期待與 ' + name + ' 建立長期合作關係，共同把握香港電商市場的增長機遇。\n\n';
+    text += '此致\n\n';
+    text += 'HKTVmall 招商團隊\nMerchant Partnership Team\n';
   }
 
   if (lang === 'bilingual') text += '\n─────────────────────\n\n';
 
   if (lang === 'en' || lang === 'bilingual') {
-    text += `Subject: HKTVmall Merchant Partnership Opportunity — ${name}\n\n`;
-    text += `Dear ${name} Team,\n\n`;
-    text += `I am reaching out from the HKTVmall Business Development team. Having learned about ${name}'s ${desc || 'business operations'}, we believe there may be an excellent opportunity for partnership.\n\n`;
-    text += `HKTVmall is Hong Kong's leading e-commerce platform, actively expanding our network of quality merchants. We offer the following merchant plans:\n\n`;
-    planList.forEach((p, i) => {
-      text += `${i+1}. ${p.en}\n`;
+    const selectedPlansEn = plans.map(p => planDetails[p]?.en).filter(Boolean);
+    const planNameEn = selectedPlansEn.map(p => p.name).join(' & ');
+
+    text += 'Subject: Exclusive Partnership: ' + name + ' × HKTVmall — Reaching 2.6M+ Hong Kong Shoppers\n\n';
+    text += 'Dear ' + name + ' Team,\n\n';
+    text += 'I am reaching out from HKTVmall's Merchant Partnership Team. Having come across ' + name + ', specialising in ' + desc + ', I believe there is a compelling opportunity for us to collaborate on Hong Kong's leading e-commerce platform.\n\n';
+    text += 'Why HKTVmall?\n';
+    text += platformInfo.stats + '. ';
+    text += platformInfo.logistics + '.\n\n';
+    text += 'Marketing & Advertising Support\n';
+    text += platformInfo.marketing + '.\n\n';
+
+    selectedPlansEn.forEach(plan => {
+      text += plan.name + '\n';
+      text += plan.fee + '. ';
+      if (plan.benefits) text += plan.benefits + '. ';
+      if (plan.freeServices) text += plan.freeServices + '. ';
+      if (plan.growth) text += plan.growth + '. ';
+      if (plan.renewal) text += plan.renewal + '.\n';
+      text += '\n';
     });
-    text += `\nI would be happy to provide a detailed proposal and fee schedule. We look forward to exploring this partnership with you!\n\n`;
-    text += `Best regards,\nHKTVmall Business Development Team\n`;
+
+    text += 'I would welcome the opportunity to arrange a brief call or meeting at your convenience to discuss how we can tailor the best partnership solution for ' + name + '.\n\n';
+    text += 'I look forward to hearing from you.\n\n';
+    text += 'Warm regards,\n\n';
+    text += 'HKTVmall Merchant Partnership Team\n';
   }
 
-  // Show preview
   document.getElementById('preview-placeholder').style.display = 'none';
   const content = document.getElementById('preview-content');
   content.style.display = 'block';
   content.innerHTML = text.replace(/\n/g, '<br>');
   state.generatedText = text;
 }
-
 function copyPreview() {
   if (state.generatedText) {
     copyText(state.generatedText);
