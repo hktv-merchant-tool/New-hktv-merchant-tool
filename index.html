@@ -1472,7 +1472,6 @@ function downloadPythonGeneratedPPT() {
 
 async function generatePPT() {
   const merchantName = document.getElementById('ppt-merchant-name').value.trim();
-  const businessDesc = document.getElementById('ppt-business-desc').value.trim() || '';
   const pains = state.pptPains;
   const plans = state.pptPlans;
 
@@ -1484,54 +1483,197 @@ async function generatePPT() {
   btn.textContent = '⏳ 生成中...';
 
   try {
-    // 載入本地 PPTX 模板
-    const response = await fetch('template.pptx');
-    if (!response.ok) throw new Error('無法下載PPT模板');
-    const arrayBuffer = await response.arrayBuffer();
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_16x9';
+    pptx.author = 'HKTVmall BD Team';
+    pptx.title = merchantName + ' - HKTVmall 招商方案';
 
-    // 用 JSZip 解壓 PPTX
-    const zip = await JSZip.loadAsync(arrayBuffer);
+    const C = { primary: 'E60012', secondary: '0066CC', dark: '222222', muted: '666666', light: 'F5F5F5', white: 'FFFFFF', gold: 'FFB800' };
 
-    // 取得所有幻燈片並排序
-    const slideFiles = Object.keys(zip.files)
-      .filter(name => /^ppt\/slides\/slide\d+\.xml$/.test(name))
-      .sort();
-
-    // 置換文字函數
-    const replaceText = (xml, oldText, newText) => {
-      return xml.replace(new RegExp(oldText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), newText);
+    const painMap = {
+      logistics:   { zh: '物流成本高', sol: '全港最大住宅配送網絡，350+輛貨車，500+取貨點，大幅降低物流成本' },
+      fee:         { zh: '平台費用不透明', sol: '佣金按分類碼固定比例計算，每月15個工作日結算，無隱藏收費' },
+      experience:  { zh: '缺乏電商經驗', sol: '電商學院提供完整培訓，MMS後台操作、產品上架、廣告投放一對一支援' },
+      inventory:   { zh: '擔心庫存風險', sol: 'GREEN LAB臨期百貨計劃，3PL靈活存貨管理，代售模式先售後買降低風險' },
+      brand:       { zh: '希望提升品牌知名度', sol: '每年過億廣告投放，TVB黃金時段，58個MTR站，23列全車身，260萬+買家' },
+      young:       { zh: '希望拓展年輕客群', sol: '精準CRM定位，25-40歲核心消費群，每季度4.7x購買頻率的忠實客戶' },
+      exposure:    { zh: '希望增加線上曝光', sol: '關鍵字廣告、橫幅廣告、首頁推廣位，SEO及站內搜尋排名優化' }
     };
 
-    // 修改每張幻燈片
-    for (const slidePath of slideFiles) {
-      let slideXml = await zip.file(slidePath).async('string');
+    // ─── 第1頁: 封面 ───
+    let slide = pptx.addSlide();
+    slide.addText('No.1', { x: 0.5, y: 1.5, w: 9, h: 0.9, fontSize: 56, bold: true, color: C.primary, align: 'center' });
+    slide.addText('香港網上購物平台', { x: 0.5, y: 2.4, w: 9, h: 0.8, fontSize: 40, bold: true, color: C.dark, align: 'center' });
+    slide.addText('商戶合作方案', { x: 0.5, y: 3.3, w: 9, h: 0.7, fontSize: 36, color: C.dark, align: 'center' });
+    if (merchantName) slide.addText(merchantName + ' 專屬方案', { x: 0.5, y: 4.5, w: 9, h: 0.6, fontSize: 24, bold: true, color: C.primary, align: 'center' });
 
-      // Slide 1: 封面 - 置換 "No.1" 為商戶名稱
-      if (slidePath === 'ppt/slides/slide1.xml') {
-        slideXml = replaceText(slideXml, 'No.1', merchantName);
-      }
-
-      // 更新 zip 中的文件
-      zip.file(slidePath, slideXml);
+    // ─── 第2頁: 痛點與解決方案（根據選擇動態生成）───
+    if (pains && pains.length > 0) {
+      slide = pptx.addSlide();
+      slide.addText('商戶資料', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark, align: 'center' });
+      slide.addText('【痛點與解決方案】', { x: 0.8, y: 1.0, w: 8.5, h: 0.5, fontSize: 16, bold: true, color: C.secondary });
+      pains.forEach((p, i) => {
+        if (painMap[p]) {
+          slide.addText('❌ ' + painMap[p].zh, { x: 0.8, y: 1.5 + i * 0.55, w: 4, h: 0.35, fontSize: 12, bold: true, color: 'CC0000' });
+          slide.addText('✓ ' + painMap[p].sol, { x: 4.8, y: 1.5 + i * 0.55, w: 4.7, h: 0.35, fontSize: 10, color: '008800' });
+        }
+      });
     }
 
-    // 生成新的 PPTX
-    const newPPTX = await zip.generateAsync({
-      type: 'blob',
-      mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    // ─── 第3頁: 發展海外市場 ───
+    slide = pptx.addSlide();
+    slide.addText('發展海外市場', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+    [['營銷與廣告', '過億重磅廣告投放，TVC電視廣告'], ['物流 & O2O 門市', '75家O2O門店，500+取貨點'], ['24小時網上購物', '全天候便捷購物體驗'], ['平台大數據分析', '260萬+活躍買家，精準CRM定位'], ['商客互聯平台與直播頻道', '直播帶貨，實時互動提升成交']].forEach((item, i) => {
+      slide.addText(item[0], { x: 0.8, y: 1.1 + i * 0.85, w: 4, h: 0.4, fontSize: 14, bold: true, color: C.primary });
+      slide.addText(item[1], { x: 0.8, y: 1.45 + i * 0.85, w: 8, h: 0.4, fontSize: 12, color: C.dark });
     });
 
-    // 下載
-    const url = URL.createObjectURL(newPPTX);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = merchantName + '_HKTVmall_招商提案.pptx';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // ─── 第4頁: HKTVmall 的里程碑 ───
+    slide = pptx.addSlide();
+    slide.addText('HKTVmall 的里程碑', { x: 0.5, y: 0.25, w: 9, h: 0.5, fontSize: 24, bold: true, color: C.dark });
+    slide.addText('城市電訊在香港聯合交易所上市（香港聯交所代號：1137）', { x: 0.5, y: 0.7, w: 9, h: 0.3, fontSize: 10, color: C.muted, align: 'center' });
+    [['1992', '城市電訊（香港）有限公司在香港正式成立'], ['1997', '香港電視面世製作電視節目'], ['2000', '附屬公司香港寬頻推出網路服務'], ['2012', '電商正式啟動'], ['2015–2016', '香港電視正式轉型為網上購物'], ['2017–2018', '物流中心自動化揀貨及倉存系統全面運作'], ['2019–2020', '海外業務擴張及開拓業務新板塊'], ['2021–2022', '街市即日餸、Mall Dollar回贈'], ['2023–現在', '持續引領香港電商市場']].forEach((m, i) => {
+      slide.addText(m[0], { x: 0.6, y: 1.05 + i * 0.46, w: 1.3, h: 0.4, fontSize: 10, bold: true, color: C.primary });
+      slide.addText(m[1], { x: 2.0, y: 1.05 + i * 0.46, w: 7, h: 0.4, fontSize: 10, color: C.dark });
+    });
 
-    toast('✅ PPT 生成成功！共 ' + slideFiles.length + ' 頁，已下載。');
+    // ─── 第5頁: 強大流量與卓越表現 ───
+    slide = pptx.addSlide();
+    slide.addText('強大流量與卓越表現', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+    slide.addText('香港領先的電子商務平台', { x: 0.5, y: 1.0, w: 9, h: 0.4, fontSize: 16, color: C.muted, align: 'center' });
+    slide.addText('2025 Total GMV', { x: 0.5, y: 1.8, w: 9, h: 0.5, fontSize: 18, color: C.muted, align: 'center' });
+    slide.addText('HK$7.89 Billion', { x: 0.5, y: 2.3, w: 9, h: 1.2, fontSize: 52, bold: true, color: C.primary, align: 'center' });
+    slide.addText('*香港科技探索有限公司2025年年報數據', { x: 0.5, y: 3.6, w: 9, h: 0.3, fontSize: 10, color: C.muted, align: 'center' });
+
+    // ─── 第6頁: 全方位的產品與服務 ───
+    slide = pptx.addSlide();
+    slide.addText('全方位的產品與服務', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+
+    // ─── 第7頁: 2025年各類別的銷售表現 ───
+    slide = pptx.addSlide();
+    slide.addText('2025年各類別的銷售表現', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+    slide.addText('2025 Total GMV', { x: 0.5, y: 1.3, w: 4, h: 0.4, fontSize: 14, color: C.muted });
+    slide.addText('HK$7.89', { x: 0.5, y: 1.7, w: 4, h: 1, fontSize: 44, bold: true, color: C.primary });
+    slide.addText('Billion', { x: 3.5, y: 2.1, w: 2, h: 0.5, fontSize: 18, color: C.primary });
+    slide.addText('*香港科技探索有限公司2025年年報數據', { x: 0.5, y: 2.8, w: 9, h: 0.3, fontSize: 10, color: C.muted });
+
+    // ─── 第8頁: 有利商戶的網購平台優勢 ───
+    slide = pptx.addSlide();
+    slide.addText('有利商戶的網購平台優勢', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+
+    // ─── 第9頁: 國際知名品牌 ───
+    slide = pptx.addSlide();
+    slide.addText('國際知名品牌遍布每個產品類別', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+
+    // ─── 第10頁: 全面滲透，擁有高回購率 ───
+    slide = pptx.addSlide();
+    slide.addText('全面滲透，擁有高回購率', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+    ['客戶性別分佈均衡', '客戶橫誇各個年齡層', '均衡的用戶基礎助力商家精準觸達男女消費群體', '每季度4.7x購買 = 忠實客戶', '高重覆購買率 = 為商家提供穩定的銷售'].forEach((t, i) => {
+      slide.addText('• ' + t, { x: 1, y: 1.1 + i * 0.55, w: 8, h: 0.5, fontSize: 14, color: C.dark });
+    });
+
+    // ─── 第11頁: 五大地區，七大貨倉 ───
+    slide = pptx.addSlide();
+    slide.addText('五大地區，七大貨倉', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+    [['上水', '常温儲運倉'], ['屯門', '常温儲運倉'], ['青衣', '常温儲運倉'], ['葵涌', '3PL物流倉庫'], ['將軍澳', '倉庫總部貨倉']].forEach((w, i) => {
+      slide.addText(w[0], { x: 0.7, y: 1.1 + i * 0.62, w: 1.5, h: 0.55, fontSize: 15, bold: true, color: C.primary });
+      slide.addText(w[1], { x: 2.4, y: 1.1 + i * 0.62, w: 6, h: 0.55, fontSize: 14, color: C.dark });
+    });
+    slide.addText('• 常温/冷凍/急凍儲運倉', { x: 0.7, y: 4.3, w: 8, h: 0.4, fontSize: 12, color: C.muted });
+
+    // ─── 第12頁: 全港最大住宅配送網絡 ───
+    slide = pptx.addSlide();
+    slide.addText('全港最大住宅配送網絡', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+    slide.addText('500+', { x: 0.5, y: 1.2, w: 9, h: 1.3, fontSize: 80, bold: true, color: C.primary, align: 'center' });
+    slide.addText('取貨點', { x: 0.5, y: 2.6, w: 9, h: 0.6, fontSize: 26, color: C.dark, align: 'center' });
+    slide.addText('(香港郵政、Circle K 便利店、759阿信屋，真好城等)', { x: 0.5, y: 3.3, w: 9, h: 0.4, fontSize: 11, color: C.muted, align: 'center' });
+
+    // ─── 第13頁: 大型優惠推廣活動 ───
+    slide = pptx.addSlide();
+    slide.addText('大型優惠推廣活動', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+    slide.addText('單日銷售額突破', { x: 0.5, y: 1.0, w: 9, h: 0.5, fontSize: 18, color: C.dark, align: 'center' });
+    slide.addText('4,000萬', { x: 0.5, y: 1.5, w: 9, h: 1.1, fontSize: 56, bold: true, color: C.primary, align: 'center' });
+    slide.addText('HKTVmall全額承擔85折', { x: 0.5, y: 2.8, w: 9, h: 0.8, fontSize: 14, color: C.muted, align: 'center' });
+
+    // ─── 第14頁: 全年不間斷為客戶的推廣活動 ───
+    slide = pptx.addSlide();
+    slide.addText('全年不間斷為客戶的推廣活動', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+
+    // ─── 第15頁: 顧客互動工具 ───
+    slide = pptx.addSlide();
+    slide.addText('顧客互動工具', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
+    slide.addText('有效提升銷售並建立長期忠誠度', { x: 0.5, y: 1.0, w: 9, h: 0.4, fontSize: 16, color: C.muted, align: 'center' });
+    ['直播限定優惠為消費者帶來購物驚喜', '連結商家與消費者進行直接互動，提升即時成交機會'].forEach((t, i) => {
+      slide.addText('• ' + t, { x: 1, y: 1.8 + i * 0.65, w: 8, h: 0.6, fontSize: 14, color: C.dark });
+    });
+
+    // ─── 第16頁: 多元化互動工具 ───
+    slide = pptx.addSlide();
+    slide.addText('多元化互動工具', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 22, bold: true, color: C.dark });
+    slide.addText('提升客戶使用率', { x: 3.5, y: 0.35, w: 5, h: 0.5, fontSize: 14, color: C.muted });
+    slide.addText('ChicChat', { x: 0.7, y: 1.0, w: 8, h: 0.4, fontSize: 16, bold: true, color: C.primary });
+    slide.addText('「查詢商家」功能', { x: 0.7, y: 1.4, w: 4, h: 0.4, fontSize: 13, bold: true, color: C.dark });
+    slide.addText('透過即時對話功能提升服務效率', { x: 0.7, y: 1.75, w: 8, h: 0.4, fontSize: 11, color: C.muted });
+    slide.addText('客戶群組系統', { x: 0.7, y: 2.3, w: 4, h: 0.4, fontSize: 13, bold: true, color: C.dark });
+    ['允許商家、消費者和KOL交流互動', '允許商家與目標客戶討論新事物、新話題', '一站式自助工具，用以精準劃分客戶群'].forEach((t, i) => {
+      slide.addText(t, { x: 0.7, y: 2.7 + i * 0.4, w: 8, h: 0.4, fontSize: 11, color: C.muted });
+    });
+
+    // ─── 第17頁: 商戶數據分析平台 ───
+    slide = pptx.addSlide();
+    slide.addText('商戶數據分析平台', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 22, bold: true, color: C.dark });
+    slide.addText('輕鬆剖析業務並進一步策劃營銷', { x: 0.5, y: 0.85, w: 8, h: 0.4, fontSize: 14, color: C.muted });
+    [['銷售數據與消費者分析', '銷售額總覽、產品和訂單趨勢'], ['分析推廣活動及廣告效益', '設定價格和促銷機制'], ['客戶人口分群及統計資料', '評估自身促銷活動的成效'], ['內外流量數據', '']].forEach((a, i) => {
+      slide.addText(a[0], { x: 0.7, y: 1.4 + i * 0.7, w: 8, h: 0.4, fontSize: 13, bold: true, color: C.dark });
+      if (a[1]) slide.addText('• ' + a[1], { x: 0.9, y: 1.7 + i * 0.7, w: 8, h: 0.35, fontSize: 11, color: C.muted });
+    });
+
+    // ─── 第18頁: 簡易加入流程 ───
+    slide = pptx.addSlide();
+    slide.addText('3個簡單步驟', { x: 0.5, y: 0.3, w: 4.5, h: 0.6, fontSize: 24, bold: true, color: C.dark });
+    slide.addText('至', { x: 4.5, y: 0.35, w: 0.5, h: 0.5, fontSize: 18, color: C.muted });
+    slide.addText('3至5個工作天成功開店', { x: 5, y: 0.3, w: 4.5, h: 0.6, fontSize: 24, bold: true, color: C.primary });
+    [['開立帳戶', '商業登記證(BR)、銀行月結單'], ['建立電子合約', '完成合約簽署程序'], ['開展您的業務', '開始上架產品並接受訂單']].forEach((s, i) => {
+      slide.addText(s[0], { x: 0.7, y: 1.2 + i * 0.75, w: 3, h: 0.45, fontSize: 16, bold: true, color: C.primary });
+      slide.addText(s[1], { x: 4, y: 1.2 + i * 0.75, w: 5, h: 0.45, fontSize: 12, color: C.dark });
+    });
+
+    // ─── 第19頁: 常規商戶加盟計劃 ───
+    slide = pptx.addSlide();
+    slide.addText('常規商戶加盟計劃', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 24, bold: true, color: C.dark });
+    slide.addText('HK$25,000', { x: 0.5, y: 1.2, w: 4, h: 0.8, fontSize: 36, bold: true, color: C.primary });
+    slide.addText('+', { x: 4.2, y: 1.2, w: 0.6, h: 0.8, fontSize: 28, color: C.dark, align: 'center' });
+    slide.addText('HKTVmall廣告金', { x: 4.8, y: 1.2, w: 4, h: 0.8, fontSize: 18, color: C.dark });
+    slide.addText('*廣告金回贈按比例發放，並需於當年12月31日前用完', { x: 0.5, y: 2.6, w: 9, h: 0.4, fontSize: 11, color: C.muted });
+
+    // ─── 第20頁: 數碼引流計劃 ───
+    slide = pptx.addSlide();
+    slide.addText('HKTVmall數碼引流計劃', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 22, bold: true, color: C.dark });
+    slide.addText('尊享特惠佣金率*', { x: 0.5, y: 1.2, w: 9, h: 0.6, fontSize: 20, bold: true, color: '008800' });
+    slide.addText('於其他社交媒體推廣/投放廣告', { x: 0.5, y: 2.0, w: 9, h: 0.5, fontSize: 16, color: C.dark });
+    slide.addText('將連結引流到 HKTVmall', { x: 0.5, y: 2.5, w: 9, h: 0.5, fontSize: 16, color: C.dark });
+
+    // ─── 第21頁: 貨款每月結算流程 ───
+    slide = pptx.addSlide();
+    slide.addText('貨款每月結算流程', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 24, bold: true, color: C.dark });
+    slide.addText('本月', { x: 0.7, y: 1.2, w: 2, h: 0.45, fontSize: 16, bold: true, color: C.primary });
+    slide.addText('本月完成的訂單', { x: 2.7, y: 1.2, w: 6, h: 0.45, fontSize: 14, color: C.dark });
+    slide.addText('在15個工作日內', { x: 0.7, y: 1.8, w: 3, h: 0.45, fontSize: 16, bold: true, color: C.primary });
+    slide.addText('款項轉至商戶的銀行帳戶', { x: 3.7, y: 1.8, w: 5, h: 0.45, fontSize: 14, color: C.dark });
+
+    // ─── 第22頁: 聯絡我們 ───
+    slide = pptx.addSlide();
+    slide.addText('立即加入我們', { x: 0.5, y: 1.0, w: 9, h: 0.9, fontSize: 36, bold: true, color: C.dark, align: 'center' });
+    slide.addText('電郵地址 : aog.merc@hktv.com.hk', { x: 0.5, y: 2.2, w: 9, h: 0.5, fontSize: 20, align: 'center' });
+    slide.addText('網站 : http://business.hktvmall.com', { x: 0.5, y: 2.8, w: 9, h: 0.5, fontSize: 18, align: 'center' });
+    slide.addText('WHATSAPP : +852 5283 4138', { x: 0.5, y: 3.4, w: 9, h: 0.5, fontSize: 18, align: 'center' });
+    slide.addText('https://wa.me/85252834138', { x: 0.5, y: 3.9, w: 9, h: 0.4, fontSize: 14, color: C.muted, align: 'center' });
+    if (merchantName) slide.addText('「' + merchantName + '」期待與您合作！', { x: 0.5, y: 4.6, w: 9, h: 0.5, fontSize: 20, bold: true, color: C.primary, align: 'center' });
+
+    // Download
+    pptx.writeFile({ fileName: merchantName + '_HKTVmall_招商提案.pptx' })
+      .then(() => { toast('✅ PPT 生成成功！共 ' + pptx.slides.length + ' 頁，已下載。'); })
+      .catch(err => { toast('❌ 生成失敗：' + err.message); });
   } catch (err) {
     console.error(err);
     toast('❌ 生成失敗：' + err.message);
@@ -1541,6 +1683,5 @@ async function generatePPT() {
   }
 }
 
+
 </script>
-</body>
-</html>
