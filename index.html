@@ -1496,7 +1496,7 @@ async function generatePPT() {
     };
 
     // 從 GitHub 載入 PPTX 模板
-    const templateUrl = 'https://raw.githubusercontent.com/hktv-merchant-tool/hktv-merchant-tool/main/template/2026%20HKTVmall%20New%20Merchant%20Acquisition%20Deck%20%5BCHI%5D.pptx';
+    const templateUrl = '2026_HKTVmall_Template.pptx';
     const response = await fetch(templateUrl);
     if (!response.ok) throw new Error('無法下載PPT模板');
 
