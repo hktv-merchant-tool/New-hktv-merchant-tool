@@ -1500,10 +1500,42 @@ function generatePPT() {
     // ─── PAGE 1: 封面 ───
     let slide = pptx.addSlide();
     slide.background = { color: C.primary };
-    slide.addText('香港網上購物平台', { x: 0.5, y: 1.5, w: 9, h: 0.9, fontSize: 44, bold: true, color: C.white, align: 'center' });
-    slide.addText('No.1', { x: 0.5, y: 2.4, w: 9, h: 0.8, fontSize: 48, bold: true, color: C.gold, align: 'center' });
-    slide.addText('商戶合作方案', { x: 0.5, y: 3.3, w: 9, h: 0.7, fontSize: 36, color: C.white, align: 'center' });
-    slide.addText(merchantName + ' 專屬方案', { x: 0.5, y: 4.3, w: 9, h: 0.6, fontSize: 24, color: C.gold, bold: true, align: 'center' });
+    slide.addText('香港網上購物平台', { x: 0.5, y: 1.2, w: 9, h: 0.9, fontSize: 44, bold: true, color: C.white, align: 'center' });
+    slide.addText('No.1', { x: 0.5, y: 2.1, w: 9, h: 0.8, fontSize: 48, bold: true, color: C.gold, align: 'center' });
+    slide.addText('商戶合作方案', { x: 0.5, y: 2.95, w: 9, h: 0.7, fontSize: 36, color: C.white, align: 'center' });
+    slide.addText(merchantName + ' 專屬方案', { x: 0.5, y: 3.75, w: 9, h: 0.55, fontSize: 22, color: C.gold, bold: true, align: 'center' });
+    if (businessDesc && businessDesc !== '相關業務') {
+      slide.addText(businessDesc, { x: 0.5, y: 4.35, w: 9, h: 0.5, fontSize: 16, color: C.white, align: 'center' });
+    }
+
+    // ─── 痛點地圖（統一資料）───
+    const painMap = {
+      logistics:   { zh: '物流成本高', sol: '全港最大住宅配送網絡，350+輛貨車，500+取貨點，大幅降低物流成本' },
+      fee:         { zh: '平台費用不透明', sol: '佣金按分類碼固定比例計算，每月15個工作日結算，無隱藏收費' },
+      experience:  { zh: '缺乏電商經驗', sol: '電商學院提供完整培訓，MMS後台操作、產品上架、廣告投放一對一支援' },
+      inventory:   { zh: '擔心庫存風險', sol: 'GREEN LAB臨期百貨計劃，3PL靈活存貨管理，代售模式先售後買降低風險' },
+      brand:       { zh: '希望提升品牌知名度', sol: '每年過億廣告投放，TVB黃金時段，58個MTR站，23列全車身，260萬+買家' },
+      young:       { zh: '希望拓展年輕客群', sol: '精準CRM定位，25-40歲核心消費群，每季度4.7x購買頻率的忠實客戶' },
+      exposure:    { zh: '希望增加線上曝光', sol: '關鍵字廣告、橫幅廣告、首頁推廣位，SEO及站內搜尋排名優化' }
+    };
+
+    // ─── 商戶專屬內容（插於第2頁）───
+    if (merchantName || (businessDesc && businessDesc !== '相關業務') || pains.length > 0) {
+      slide = pptx.addSlide();
+      slide.addText(merchantName + ' 商戶專屬內容', { x: 0.5, y: 0.3, w: 9, h: 0.65, fontSize: 26, bold: true, color: C.primary });
+      if (businessDesc && businessDesc !== '相關業務') {
+        slide.addText('主營業務：' + businessDesc, { x: 0.5, y: 1.0, w: 9, h: 0.45, fontSize: 16, color: C.dark });
+      }
+      if (pains.length > 0) {
+        slide.addText('痛點與解決方案', { x: 0.5, y: 1.55, w: 9, h: 0.45, fontSize: 18, bold: true, color: C.dark });
+        pains.forEach((p, i) => {
+          if (painMap[p]) {
+            slide.addText('❌ ' + painMap[p].zh, { x: 0.7, y: 2.1 + i * 0.78, w: 8, h: 0.38, fontSize: 14, bold: true, color: 'CC0000' });
+            slide.addText('✓  ' + painMap[p].sol, { x: 0.9, y: 2.45 + i * 0.78, w: 8.3, h: 0.38, fontSize: 12, color: '008800' });
+          }
+        });
+      }
+    }
 
     // ─── PAGE 2: No.1 香港網上購物平台 ───
     slide = pptx.addSlide();
@@ -1877,27 +1909,6 @@ function generatePPT() {
     // ─── PAGE 49: 新商戶入帳銀行資料 ───
     slide = pptx.addSlide();
     slide.addText('新商戶入帳 HKTVmall 銀行資料', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
-
-    // ─── 痛點與解決方案（動態，插入在相應位置）───
-    if (pains.length > 0) {
-      slide = pptx.addSlide();
-      slide.addText('HKTVmall 助您解決商業挑戰', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark });
-      const painMap = {
-        logistics:   { zh: '物流成本高', sol: '全港最大住宅配送網絡，350+輛貨車，500+取貨點，大幅降低物流成本' },
-        fee:         { zh: '平台費用不透明', sol: '佣金按分類碼固定比例計算，每月15個工作日結算，無隱藏收費' },
-        experience:  { zh: '缺乏電商經驗', sol: '電商學院提供完整培訓，MMS後台操作、產品上架、廣告投放一對一支援' },
-        inventory:   { zh: '擔心庫存風險', sol: 'GREEN LAB臨期百貨計劃，3PL靈活存貨管理，代售模式先售後買降低風險' },
-        brand:       { zh: '希望提升品牌知名度', sol: '每年過億廣告投放，TVB黃金時段，58個MTR站，23列全車身，260萬+買家' },
-        young:       { zh: '希望拓展年輕客群', sol: '精準CRM定位，25-40歲核心消費群，每季度4.7x購買頻率的忠實客戶' },
-        exposure:    { zh: '希望增加線上曝光', sol: '關鍵字廣告、橫幅廣告、首頁推廣位，SEO及站內搜尋排名優化' }
-      };
-      pains.forEach((p, i) => {
-        if (painMap[p]) {
-          slide.addText('❌ ' + painMap[p].zh, { x: 0.7, y: 1.0 + i * 1.05, w: 8, h: 0.42, fontSize: 16, bold: true, color: 'CC0000' });
-          slide.addText('✓  ' + painMap[p].sol, { x: 0.9, y: 1.38 + i * 1.05, w: 7.8, h: 0.52, fontSize: 13, color: '008800' });
-        }
-      });
-    }
 
     // Download
     pptx.writeFile({ fileName: merchantName + '_HKTVmall_招商提案.pptx' })
