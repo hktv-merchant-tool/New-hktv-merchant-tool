@@ -769,6 +769,20 @@ textarea { resize: vertical; line-height: 1.6; }
           💡 使用 Python 生成器需要本地部署 python-pptx，詳見 <code>hktv_ppt_generator.py</code>
         </div>
       </div>
+
+      <!-- Template Upload for Full Features -->
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:2px solid var(--primary);background:#f8faf8;border-radius:8px;padding:1rem">
+        <div style="font-size:0.85rem;font-weight:600;color:var(--primary);margin-bottom:0.5rem">📁 上傳 Short Version 模板（保留所有圖片和圖示）</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.8rem">上傳您的 Short Version 模板文件，生成的 PPT 將完整保留所有原始圖片和圖示</div>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+          <input type="file" id="ppt-template-upload" accept=".pptx" style="display:none" onchange="handleTemplateUpload(this)">
+          <button class="btn btn-outline" onclick="document.getElementById('ppt-template-upload').click()" style="font-size:0.8rem">
+            📂 選擇模板檔案
+          </button>
+          <div id="ppt-template-info" style="font-size:0.75rem;color:var(--muted)"></div>
+        </div>
+        <div id="ppt-template-status" style="font-size:0.7rem;margin-top:0.5rem"></div>
+      </div>
     </div>
 
     <!-- Preview Card -->
@@ -882,6 +896,8 @@ let state = {
   pptPlans: [],
   pptMerchantName: '',
   pptBusinessDesc: '',
+  pptTemplateFile: null,   // 上傳的模板檔案
+  pptTemplateName: '',    // 模板檔案名稱
 };
 
 // ── NAVIGATION ────────────────────────────────────────────────────
@@ -1448,8 +1464,13 @@ function resetPPT() {
   document.querySelectorAll('[data-pptplan].selected').forEach(c => c.classList.remove('selected'));
   document.querySelectorAll('[data-pptplan] input').forEach(c => c.checked = false);
   document.getElementById('ppt-preview-card').style.display = 'none';
+  document.getElementById('ppt-template-upload').value = '';
+  document.getElementById('ppt-template-info').innerHTML = '';
+  document.getElementById('ppt-template-status').innerHTML = '';
   state.pptPains = [];
   state.pptPlans = [];
+  state.pptTemplateFile = null;
+  state.pptTemplateName = '';
   validatePPTForm();
   toast('已重置');
 }
@@ -1465,6 +1486,224 @@ function downloadPythonGeneratedPPT() {
   toast('✅ 已下載 Python PPT 生成器！\n運行: python3 hktv_ppt_generator.py --help');
 }
 
+// ── Template Upload Handler ────────────────────────────────────────
+function handleTemplateUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  if (!file.name.endsWith('.pptx')) {
+    toast('❌ 請上傳 .pptx 格式的檔案');
+    input.value = '';
+    return;
+  }
+
+  state.pptTemplateFile = file;
+  state.pptTemplateName = file.name;
+
+  const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+  document.getElementById('ppt-template-info').innerHTML =
+    `<span style="color:var(--primary)">✅ ${file.name}</span> (${sizeMB} MB)`;
+  document.getElementById('ppt-template-status').innerHTML =
+    `<span style="color:#008800">✓ 模板已載入，生成時將保留所有圖片和圖示</span>`;
+
+  toast(`✅ 已載入模板: ${file.name}`);
+}
+
+// ── PPT Generator (使用上傳的模板) ────────────────────────────────
+async function generatePPTFromTemplate() {
+  const merchantName = document.getElementById('ppt-merchant-name').value.trim();
+  const businessDesc = document.getElementById('ppt-business-desc').value.trim();
+  const pains = state.pptPains;
+
+  if (!merchantName) { toast('請填寫商戶名稱'); return; }
+  if (!state.pptTemplateFile) { toast('請先上傳 Short Version 模板'); return; }
+
+  const btn = document.getElementById('ppt-generate-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ 處理中...';
+
+  try {
+    // 痛點對應
+    const painMap = {
+      logistics:   { zh: '物流成本高', sol: '全港最大住宅配送網絡，350+輛貨車，500+取貨點，大幅降低物流成本' },
+      fee:         { zh: '平台費用不透明', sol: '佣金按分類碼固定比例計算，每月15個工作日結算，無隱藏收費' },
+      experience:  { zh: '缺乏電商經驗', sol: '電商學院提供完整培訓，MMS後台操作、產品上架、廣告投放一對一支援' },
+      inventory:   { zh: '擔心庫存風險', sol: 'GREEN LAB臨期百貨計劃，3PL靈活存貨管理，代售模式先售後買降低風險' },
+      brand:       { zh: '希望提升品牌知名度', sol: '每年過億廣告投放，TVB黃金時段，58個MTR站，23列全車身，260萬+買家' },
+      young:       { zh: '希望拓展年輕客群', sol: '精準CRM定位，25-40歲核心消費群，每季度4.7x購買頻率的忠實客戶' },
+      exposure:    { zh: '希望增加線上曝光', sol: '關鍵字廣告、橫幅廣告、首頁推廣位，SEO及站內搜尋排名優化' }
+    };
+
+    // 讀取 PPTX 檔案
+    const arrayBuffer = await state.pptTemplateFile.arrayBuffer();
+
+    // 使用 JSZip 解壓
+    const zip = await JSZip.loadAsync(arrayBuffer);
+
+    // ── 修改第1頁：替換公司名稱 ──
+    const slide1Path = 'ppt/slides/slide1.xml';
+    const slide1Xml = await zip.file(slide1Path).async('string');
+
+    // 替換 "No.1" 為公司名稱
+    let modifiedSlide1 = slide1Xml.replace(/No\.1(?!\d)/g, merchantName);
+
+    // 替換內容寫回
+    zip.file(slide1Path, modifiedSlide1);
+
+    // ── 修改第2頁：添加業務描述和痛點 ──
+    const slide2Path = 'ppt/slides/slide2.xml';
+    const slide2Xml = await zip.file(slide2Path).async('string');
+
+    // 業務描述 XML 片段
+    let descXml = '';
+    if (businessDesc) {
+      descXml += `
+<p:sp>
+  <p:nvSpPr>
+    <p:cNvPr id="100" name="業務描述"/>
+    <p:cNvSpPr txBox="1"/>
+    <p:nvPr/>
+  </p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="457200" y="3200400"/><a:ext cx="8229600" cy="400000"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr/>
+    <a:lstStyle/>
+    <a:p>
+      <a:pPr algn="l"/>
+      <a:r><a:rPr lang="zh-CN" sz="1400" b="1"><a:solidFill><a:srgbClr val="0066CC"/></a:solidFill></a:rPr><a:t>【業務描述】${escapeXml(businessDesc)}</a:t></a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>`;
+    }
+
+    // 痛點標題 XML 片段
+    let painHeaderXml = '';
+    if (pains && pains.length > 0) {
+      painHeaderXml += `
+<p:sp>
+  <p:nvSpPr>
+    <p:cNvPr id="101" name="痛點標題"/>
+    <p:cNvSpPr txBox="1"/>
+    <p:nvPr/>
+  </p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="457200" y="${businessDesc ? '3700000' : '3200400'}"/><a:ext cx="8229600" cy="360000"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr/>
+    <a:lstStyle/>
+    <a:p>
+      <a:pPr algn="l"/>
+      <a:r><a:rPr lang="zh-CN" sz="1400" b="1"><a:solidFill><a:srgbClr val="666666"/></a:solidFill></a:rPr><a:t>【痛點與解決方案】</a:t></a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>`;
+    }
+
+    // 痛點內容 XML 片段
+    let painContentXml = '';
+    let yOffset = businessDesc ? 4060000 : 3560000;
+    if (pains && pains.length > 0) {
+      pains.forEach((p, i) => {
+        if (painMap[p]) {
+          const data = painMap[p];
+          painContentXml += `
+<p:sp>
+  <p:nvSpPr>
+    <p:cNvPr id="${102 + i * 2}" name="痛點${i}"/>
+    <p:cNvSpPr txBox="1"/>
+    <p:nvPr/>
+  </p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="457200" y="${yOffset + i * 600000}"/><a:ext cx="4000000" cy="360000"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr/>
+    <a:lstStyle/>
+    <a:p>
+      <a:pPr algn="l"/>
+      <a:r><a:rPr lang="zh-CN" sz="1200" b="1"><a:solidFill><a:srgbClr val="CC0000"/></a:solidFill></a:rPr><a:t>❌ ${escapeXml(data.zh)}</a:t></a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>
+<p:sp>
+  <p:nvSpPr>
+    <p:cNvPr id="${103 + i * 2}" name="方案${i}"/>
+    <p:cNvSpPr txBox="1"/>
+    <p:nvPr/>
+  </p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="4572000" y="${yOffset + i * 600000}"/><a:ext cx="4800000" cy="500000"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr/>
+    <a:lstStyle/>
+    <a:p>
+      <a:pPr algn="l"/>
+      <a:r><a:rPr lang="zh-CN" sz="1100"><a:solidFill><a:srgbClr val="008800"/></a:solidFill></a:rPr><a:t>✓ ${escapeXml(data.sol)}</a:t></a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>`;
+        }
+      });
+    }
+
+    // 找到 </p:spTree> 並在結尾前插入新內容
+    let modifiedSlide2 = slide2Xml;
+    const insertPoint = modifiedSlide2.lastIndexOf('</p:spTree>');
+    const newContent = descXml + painHeaderXml + painContentXml;
+    modifiedSlide2 = modifiedSlide2.slice(0, insertPoint) + newContent + '\n' + modifiedSlide2.slice(insertPoint);
+
+    // 寫回修改後的 slide2
+    zip.file(slide2Path, modifiedSlide2);
+
+    // ── 重新打包為 PPTX ──
+    const blob = await zip.generateAsync({
+      type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      compression: 'DEFLATE',
+      compressionOptions: { level: 6 }
+    });
+
+    // ── 下載檔案 ──
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${merchantName}_HKTVmall_招商方案.pptx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast(`✅ PPT 生成成功！已保留 ${pains ? pains.length : 0} 個痛點內容`);
+  } catch (err) {
+    console.error(err);
+    toast('❌ 處理失敗：' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🎯 生成招商PPT';
+  }
+}
+
+// XML 特殊字符轉義
+function escapeXml(str) {
+  return str.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case "'": return '&apos;';
+      case '"': return '&quot;';
+    }
+  });
+}
+
 // ── PPT Generator (Browser-side using pptxgenjs) ──
 // 完整模板結構（跟足 2026 HKTVmall New Merchant Acquisition Deck [CHI] 49頁）
 
@@ -1472,11 +1711,17 @@ function downloadPythonGeneratedPPT() {
 
 async function generatePPT() {
   const merchantName = document.getElementById('ppt-merchant-name').value.trim();
+  const businessDesc = document.getElementById('ppt-business-desc').value.trim();
   const pains = state.pptPains;
   const plans = state.pptPlans;
 
   if (!merchantName) { toast('請填寫商戶名稱'); return; }
   if (plans.length === 0) { toast('請選擇至少一個招商計劃'); return; }
+
+  // 如果有上傳模板，使用模板模式
+  if (state.pptTemplateFile) {
+    return generatePPTFromTemplate();
+  }
 
   const btn = document.getElementById('ppt-generate-btn');
   btn.disabled = true;
@@ -1508,15 +1753,28 @@ async function generatePPT() {
     slide.addText('商戶合作方案', { x: 0.5, y: 3.3, w: 9, h: 0.7, fontSize: 36, color: C.white, align: 'center' });
     slide.addText(merchantName + ' 專屬方案', { x: 0.5, y: 4.5, w: 9, h: 0.6, fontSize: 24, color: C.gold, bold: true, align: 'center' });
 
-    // ─── 第2頁: 痛點與解決方案（根據選擇動態生成）───
+    // ─── 第2頁: 商戶資料、業務描述及痛點與解決方案（根據選擇動態生成）───
     if (pains && pains.length > 0) {
       slide = pptx.addSlide();
       slide.addText('商戶資料', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 26, bold: true, color: C.dark, align: 'center' });
-      slide.addText('【痛點與解決方案】', { x: 0.8, y: 1.0, w: 8.5, h: 0.5, fontSize: 16, bold: true, color: C.secondary });
+
+      let yPos = 1.0;
+
+      // 添加業務描述（如果有）
+      if (businessDesc) {
+        slide.addText('【業務描述】', { x: 0.8, y: yPos, w: 8.5, h: 0.4, fontSize: 14, bold: true, color: C.secondary });
+        yPos += 0.4;
+        slide.addText(businessDesc, { x: 0.8, y: yPos, w: 8.5, h: 0.5, fontSize: 12, color: C.dark });
+        yPos += 0.6;
+      }
+
+      // 添加痛點與解決方案
+      slide.addText('【痛點與解決方案】', { x: 0.8, y: yPos, w: 8.5, h: 0.4, fontSize: 14, bold: true, color: C.secondary });
+      yPos += 0.45;
       pains.forEach((p, i) => {
         if (painMap[p]) {
-          slide.addText('❌ ' + painMap[p].zh, { x: 0.8, y: 1.5 + i * 0.55, w: 4, h: 0.35, fontSize: 12, bold: true, color: 'CC0000' });
-          slide.addText('✓ ' + painMap[p].sol, { x: 4.8, y: 1.5 + i * 0.55, w: 4.7, h: 0.35, fontSize: 10, color: '008800' });
+          slide.addText('❌ ' + painMap[p].zh, { x: 0.8, y: yPos + i * 0.55, w: 4, h: 0.35, fontSize: 12, bold: true, color: 'CC0000' });
+          slide.addText('✓ ' + painMap[p].sol, { x: 4.8, y: yPos + i * 0.55, w: 4.7, h: 0.35, fontSize: 10, color: '008800' });
         }
       });
     }
@@ -1684,6 +1942,6 @@ async function generatePPT() {
   }
 }
 
-
-
-</script>、</body>、</html>
+</script>
+</body>
+</html>
