@@ -751,6 +751,22 @@ textarea { resize: vertical; line-height: 1.6; }
         <div id="ppt-form-hint" style="font-size:0.78rem;color:var(--accent)">請填寫商戶名稱</div>
         <button class="btn btn-outline" onclick="resetPPT()">重置</button>
       </div>
+
+      <!-- Download Template -->
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px dashed var(--border)">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.5rem">📥 完整模板下載</div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <a class="btn btn-outline" style="text-decoration:none" href="2026%20HKTVmall%20New%20Merchant%20Acquisition%20Deck%20%5BCHI%5D.pdf" download="2026_HKTVmall_招商計劃模板.pdf">
+            📄 PDF 完整模板（49頁）
+          </a>
+          <button class="btn btn-outline" onclick="downloadPythonGeneratedPPT()">
+            🐍 Python 生成器（可自訂）
+          </button>
+        </div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:0.5rem">
+          💡 使用 Python 生成器需要本地部署 python-pptx，詳見 <code>hktv_ppt_generator.py</code>
+        </div>
+      </div>
     </div>
 
     <!-- Preview Card -->
@@ -760,7 +776,7 @@ textarea { resize: vertical; line-height: 1.6; }
     </div>
   </div>
 
-  <div class="footer">Made with Claude · HKTVmall B2B Tool v2.1 · 本地模板版</div>
+  <div class="footer">Made with Claude · HKTVmall B2B Tool v2.2 · 新增招商計劃模板下載</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1434,6 +1450,17 @@ function resetPPT() {
   state.pptPlans = [];
   validatePPTForm();
   toast('已重置');
+}
+
+function downloadPythonGeneratedPPT() {
+  // Trigger download of the Python PPT generator script
+  const link = document.createElement('a');
+  link.href = 'hktv_ppt_generator.py';
+  link.download = 'hktv_ppt_generator.py';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  toast('✅ 已下載 Python PPT 生成器！\n運行: python3 hktv_ppt_generator.py --help');
 }
 
 // ── PPT Backend API ─────────────────────────────────────────────
